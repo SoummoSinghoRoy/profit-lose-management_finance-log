@@ -39,5 +39,6 @@ router.post('/signup', isAuthenticated_middleware_1.isNotAuthenticated, uploadHa
 router.post('/login', isAuthenticated_middleware_1.isNotAuthenticated, auth_controller_1.logInPostController);
 router.post('/logout', isAuthenticated_middleware_1.isAuthenticated, auth_controller_1.logoutPostController);
 router.patch('/edit/:userId', isAuthenticated_middleware_1.isAuthenticated, auth_controller_1.passwordEditPatchController);
+router.delete('/delete/:userId', isAuthenticated_middleware_1.isAuthenticated, auth_controller_1.userDeleteController);
 exports.default = router;
 //# sourceMappingURL=auth.route.js.map

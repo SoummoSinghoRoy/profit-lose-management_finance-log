@@ -1,7 +1,7 @@
-import { Router, Request, Response, NextFunction, RequestHandler } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 const router = Router();
 
-import { logInPostController, logoutPostController, passwordEditPatchController, signUpPostController } from '../controller/auth.controller';
+import { logInPostController, logoutPostController, passwordEditPatchController, signUpPostController, userDeleteController } from '../controller/auth.controller';
 import upload from '../../middlewares/fileupload';
 import { isAuthenticated, isNotAuthenticated } from '../../middlewares/isAuthenticated.middleware';
 const fileupload = upload.single('thumbnail');
@@ -32,7 +32,8 @@ const uploadHandle = async(req: Request, res: Response, next: NextFunction): Pro
 
 router.post('/signup', isNotAuthenticated, uploadHandle, signUpPostController);
 router.post('/login', isNotAuthenticated, logInPostController);
-router.post('/logout', isAuthenticated as RequestHandler, logoutPostController);
-router.patch('/edit/:userId', isAuthenticated as RequestHandler, passwordEditPatchController );
+router.post('/logout', isAuthenticated, logoutPostController);
+router.patch('/edit/:userId', isAuthenticated, passwordEditPatchController );
+router.delete('/delete/:userId', isAuthenticated, userDeleteController);
 
 export default router;

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.passwordEditPatchController = exports.logoutPostController = exports.logInPostController = exports.signUpPostController = void 0;
+exports.userDeleteController = exports.passwordEditPatchController = exports.logoutPostController = exports.logInPostController = exports.signUpPostController = void 0;
 const fs_1 = __importDefault(require("fs"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -200,7 +200,7 @@ const passwordEditPatchController = (req, res) => __awaiter(void 0, void 0, void
         res.json(validationresult);
     }
     try {
-        if (customReq.user) {
+        if (customReq.user.id === userId) {
             bcrypt_1.default.hash(newPassword, 10, (err, hash) => __awaiter(void 0, void 0, void 0, function* () {
                 if (err) {
                     console.log(err);
@@ -223,8 +223,8 @@ const passwordEditPatchController = (req, res) => __awaiter(void 0, void 0, void
         }
         else {
             const response = {
-                status: 200,
-                message: `Password can't update`
+                status: 403,
+                message: `Can't update password`
             };
             res.json(response);
         }
@@ -240,4 +240,41 @@ const passwordEditPatchController = (req, res) => __awaiter(void 0, void 0, void
     }
 });
 exports.passwordEditPatchController = passwordEditPatchController;
+const userDeleteController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const customReq = req;
+    const { userId } = req.params;
+    try {
+        if (customReq.user.id === userId) {
+            const validUser = yield User_model_1.default.findOne({ _id: userId });
+            yield User_model_1.default.deleteOne({ _id: validUser === null || validUser === void 0 ? void 0 : validUser._id });
+            res.clearCookie('authorization');
+            fs_1.default.unlink(`./${validUser.thumbnail}`, (err) => {
+                if (err)
+                    throw err;
+            });
+            const response = {
+                status: 200,
+                message: `User deleted successfully`
+            };
+            res.json(response);
+        }
+        else {
+            const response = {
+                status: 403,
+                message: `Can't delete user`
+            };
+            res.json(response);
+        }
+    }
+    catch (error) {
+        console.log(error);
+        const response = {
+            status: 500,
+            message: 'Error occurred, get back soon',
+            error: { message: 'Internal server error' }
+        };
+        res.json(response);
+    }
+});
+exports.userDeleteController = userDeleteController;
 //# sourceMappingURL=auth.controller.js.map

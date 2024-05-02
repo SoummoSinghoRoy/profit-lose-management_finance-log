@@ -14,14 +14,15 @@ interface CustomRequest extends Request {
     username: string,
     email: string
   } | null
-} 
+}
 
-const isAuthenticated = (req: CustomRequest, res: Response, next: NextFunction): void => {
+const isAuthenticated = (req: Request, res: Response, next: NextFunction): void => {
+  const customReq = req as CustomRequest;
   const token = req.cookies!.authorization;
   if (token) {
     const decoded = jwtDecode<JwtPayload>(token);
     if (decoded) {
-      req.user = {
+      customReq.user = {
         id: decoded!.id,
         username: decoded!.username,
         email: decoded!.email
@@ -29,12 +30,19 @@ const isAuthenticated = (req: CustomRequest, res: Response, next: NextFunction):
       next()
     } else {
       const response: AuthenticationResponse = {
-        status: 401,
-        message: 'UnAuthorized',
+        status: 403,
+        message: 'Forbidden',
         isAuthenticated: false
       }
       res.json(response);
     }
+  } else {
+    const response: AuthenticationResponse = {
+      status: 401,
+      message: 'UnAuthorized',
+      isAuthenticated: false
+    }
+    res.json(response);
   }
 }
 

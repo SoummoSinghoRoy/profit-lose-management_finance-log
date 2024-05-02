@@ -198,7 +198,7 @@ const passwordEditPatchController = async (req: Request, res: Response): Promise
     res.json(validationresult)
   }
   try {
-    if (customReq.user) {
+    if (customReq.user!.id === userId) {
       bcrypt.hash(newPassword, 10,  async(err, hash) => {
         if (err) {
           console.log(err);
@@ -223,8 +223,8 @@ const passwordEditPatchController = async (req: Request, res: Response): Promise
       })
     } else {
       const response: ApiResponse = {
-        status: 200,
-        message: `Password can't update`
+        status: 403,
+        message: `Can't update password`
       }
       res.json(response)
     }
@@ -239,4 +239,38 @@ const passwordEditPatchController = async (req: Request, res: Response): Promise
   }
 }
 
-export { signUpPostController, logInPostController, logoutPostController, passwordEditPatchController };
+const userDeleteController = async (req: Request, res: Response): Promise<void> => {
+  const customReq = req as CustomRequest;
+  const { userId } = req.params;
+  try {
+    if (customReq.user!.id === userId) {
+      const validUser = await User.findOne({_id: userId});
+      await User.deleteOne({_id: validUser?._id});
+      res.clearCookie('authorization');
+      fs.unlink(`./${validUser!.thumbnail}`, (err) => {
+        if (err) throw err
+      })
+      const response: ApiResponse = {
+        status: 200,
+        message: `User deleted successfully`
+      }
+      res.json(response)
+    } else {
+      const response: ApiResponse = {
+        status: 403,
+        message: `Can't delete user`
+      }
+      res.json(response)
+    }
+  } catch (error) {
+    console.log(error);
+    const response: ApiResponse = {
+      status: 500,
+      message: 'Error occurred, get back soon',
+      error: { message: 'Internal server error' }
+    }
+    res.json(response)
+  }
+}
+
+export { signUpPostController, logInPostController, logoutPostController, passwordEditPatchController, userDeleteController };

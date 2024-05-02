@@ -3,11 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.isNotAuthenticated = exports.isAuthenticated = void 0;
 const jwt_decode_1 = require("jwt-decode");
 const isAuthenticated = (req, res, next) => {
+    const customReq = req;
     const token = req.cookies.authorization;
     if (token) {
         const decoded = (0, jwt_decode_1.jwtDecode)(token);
         if (decoded) {
-            req.user = {
+            customReq.user = {
                 id: decoded.id,
                 username: decoded.username,
                 email: decoded.email
@@ -16,12 +17,20 @@ const isAuthenticated = (req, res, next) => {
         }
         else {
             const response = {
-                status: 401,
-                message: 'UnAuthorized',
+                status: 403,
+                message: 'Forbidden',
                 isAuthenticated: false
             };
             res.json(response);
         }
+    }
+    else {
+        const response = {
+            status: 401,
+            message: 'UnAuthorized',
+            isAuthenticated: false
+        };
+        res.json(response);
     }
 };
 exports.isAuthenticated = isAuthenticated;
