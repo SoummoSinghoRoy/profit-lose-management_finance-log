@@ -17,25 +17,29 @@ const transactionSchema = new mongoose_1.Schema({
     amount: {
         total: {
             type: Number,
-            default: 0
+            default: 0,
+            required: true
         },
         paid: {
             type: Number,
-            default: 0
+            default: 0,
+            required: true
         },
         received: {
             type: Number,
-            default: 0
+            default: 0,
+            required: true
         },
         due: {
             type: Number,
-            default: 0
+            default: 0,
+            required: true
         }
     },
     date: {
         type: String,
         required: true,
-        set: (v) => (0, moment_1.default)(v, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+        set: (v) => (0, moment_1.default)(v, 'YYYY-MM-DD').format('YYYY-MM-DD'),
         get: (v) => (0, moment_1.default)(v, 'YYYY-MM-DD').format('DD-MM-YYYY')
     },
     description: {

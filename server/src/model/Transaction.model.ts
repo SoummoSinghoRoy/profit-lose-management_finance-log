@@ -1,7 +1,7 @@
 import { Schema, ObjectId, model } from 'mongoose';
 import moment from 'moment';
 
-type TransactionType = "income" | 'expense'
+type TransactionType = "income" | 'expense';
 
 interface ITransaction {
   transactionType: TransactionType,
@@ -29,25 +29,29 @@ const transactionSchema = new Schema<ITransaction> ({
   amount: {
     total: {
       type: Number,
-      default: 0
+      default: 0,
+      required: true
     },
     paid: {
       type: Number,
-      default: 0
+      default: 0,
+      required: true
     },
     received: {
       type: Number,
-      default: 0
+      default: 0,
+      required: true
     }, 
     due: {
       type: Number,
-      default: 0 
+      default: 0,
+      required: true
     }
   },
   date: {
     type: String,
     required: true,
-    set: (v: string) => moment(v, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+    set: (v: string) => moment(v, 'YYYY-MM-DD').format('YYYY-MM-DD'),
     get: (v: string) => moment(v, 'YYYY-MM-DD').format('DD-MM-YYYY')
   },
   description: {
