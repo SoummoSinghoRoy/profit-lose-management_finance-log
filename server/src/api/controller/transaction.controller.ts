@@ -169,4 +169,33 @@ const allTransactionsGetController = async (req: Request, res: Response): Promis
   }
 }
 
-export { transactionCreatePostController, transactionEditPutController, allTransactionsGetController };
+const transactionDeleteController = async (req: Request, res: Response): Promise<void> => {
+  const { transactionId } = req.params;
+  try {
+    const validTransaction = await Transaction.findById(transactionId);
+    if (validTransaction) {
+      await Transaction.deleteOne({_id: validTransaction._id});
+      const response: ApiResponse = {
+        status: 200,
+        message: 'successfully deleted',
+      }
+      res.json(response)
+    } else {
+      const response: ApiResponse = {
+        status: 404,
+        message: `Transactions not found`
+      }
+      res.json(response)
+    }
+  } catch (error) {
+    console.log(error);
+    const response: ApiResponse = {
+      status: 500,
+      message: 'Error occurred, get back soon',
+      error: { message: 'Internal server error' }
+    }
+    res.json(response)
+  }
+}
+
+export { transactionCreatePostController, transactionEditPutController, allTransactionsGetController, transactionDeleteController };

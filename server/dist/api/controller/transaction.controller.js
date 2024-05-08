@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allTransactionsGetController = exports.transactionEditPutController = exports.transactionCreatePostController = void 0;
+exports.transactionDeleteController = exports.allTransactionsGetController = exports.transactionEditPutController = exports.transactionCreatePostController = void 0;
 const transaction_validation_1 = __importDefault(require("../../validation/transaction.validation"));
 const Transaction_model_1 = __importDefault(require("../../model/Transaction.model"));
 const User_model_1 = __importDefault(require("../../model/User.model"));
@@ -163,4 +163,35 @@ const allTransactionsGetController = (req, res) => __awaiter(void 0, void 0, voi
     }
 });
 exports.allTransactionsGetController = allTransactionsGetController;
+const transactionDeleteController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { transactionId } = req.params;
+    try {
+        const validTransaction = yield Transaction_model_1.default.findById(transactionId);
+        if (validTransaction) {
+            yield Transaction_model_1.default.deleteOne({ _id: validTransaction._id });
+            const response = {
+                status: 200,
+                message: 'successfully deleted',
+            };
+            res.json(response);
+        }
+        else {
+            const response = {
+                status: 404,
+                message: `Transactions not found`
+            };
+            res.json(response);
+        }
+    }
+    catch (error) {
+        console.log(error);
+        const response = {
+            status: 500,
+            message: 'Error occurred, get back soon',
+            error: { message: 'Internal server error' }
+        };
+        res.json(response);
+    }
+});
+exports.transactionDeleteController = transactionDeleteController;
 //# sourceMappingURL=transaction.controller.js.map
