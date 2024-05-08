@@ -33,7 +33,7 @@ const uploadHandle = async(req: Request, res: Response, next: NextFunction): Pro
 router.post('/signup', isNotAuthenticated, uploadHandle, signUpPostController);
 router.post('/login', isNotAuthenticated, logInPostController);
 router.post('/logout', isAuthenticated, logoutPostController);
-router.patch('/edit/:userId', isAuthenticated, passwordEditPatchController );
+router.patch('/edit/:userId', isAuthenticated, passwordEditPatchController);
 router.delete('/delete/:userId', isAuthenticated, userDeleteController);
 
 export default router;

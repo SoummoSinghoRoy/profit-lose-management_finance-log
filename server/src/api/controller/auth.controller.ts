@@ -212,7 +212,7 @@ const passwordEditPatchController = async (req: Request, res: Response): Promise
           await User.findOneAndUpdate( 
             {_id: customReq.user!.id}, 
             { password: hash }, 
-            {new: true, session: null}
+            {new: true}
           )
           const response: ApiResponse = {
             status: 200,

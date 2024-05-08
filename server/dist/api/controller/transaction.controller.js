@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.transactionCreatePostController = void 0;
+exports.allTransactionsGetController = exports.transactionEditPutController = exports.transactionCreatePostController = void 0;
 const transaction_validation_1 = __importDefault(require("../../validation/transaction.validation"));
 const Transaction_model_1 = __importDefault(require("../../model/Transaction.model"));
 const User_model_1 = __importDefault(require("../../model/User.model"));
@@ -49,7 +49,7 @@ const transactionCreatePostController = (req, res) => __awaiter(void 0, void 0, 
         const transaction = yield registeredTransaction.save();
         const response = {
             status: 200,
-            message: 'User successfully created',
+            message: 'Transaction successfully created',
             data: {
                 id: transaction._id,
                 transactionType: transaction.transactionType,
@@ -71,4 +71,96 @@ const transactionCreatePostController = (req, res) => __awaiter(void 0, void 0, 
     }
 });
 exports.transactionCreatePostController = transactionCreatePostController;
+const transactionEditPutController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { transaction_type, to_from, total, paid, received, due, date, description } = req.body;
+    const transactionType = transaction_type.toLowerCase();
+    const { transactionId } = req.params;
+    const validTransaction = yield Transaction_model_1.default.findById(transactionId);
+    if (validTransaction) {
+        const validation = (0, transaction_validation_1.default)({ transactionType, to_from, total, paid, received, due, date, description });
+        if (!validation.isValid) {
+            const validationresult = {
+                status: 400,
+                message: 'Error occurred',
+                error: {
+                    message: validation.error
+                }
+            };
+            res.json(validationresult);
+        }
+        try {
+            yield Transaction_model_1.default.findOneAndUpdate({ _id: validTransaction._id }, { transactionType,
+                to_from,
+                amount: {
+                    total,
+                    paid: transactionType === 'income' ? 0 : paid,
+                    received: transactionType === 'expense' ? 0 : received,
+                    due
+                },
+                date,
+                description }, { new: true });
+            const updatedTransaction = yield Transaction_model_1.default.findById(transactionId);
+            const response = {
+                status: 200,
+                message: 'Transaction successfully updated',
+                data: {
+                    id: updatedTransaction._id,
+                    transactionType: updatedTransaction.transactionType,
+                    to_from: updatedTransaction.to_from,
+                    date: updatedTransaction.date,
+                    description: updatedTransaction.description
+                }
+            };
+            res.json(response);
+        }
+        catch (error) {
+            console.log(error);
+            const response = {
+                status: 500,
+                message: 'Error occurred, get back soon',
+                error: { message: 'Internal server error' }
+            };
+            res.json(response);
+        }
+    }
+    else {
+        const response = {
+            status: 404,
+            message: `Transaction item not found`
+        };
+        res.json(response);
+    }
+});
+exports.transactionEditPutController = transactionEditPutController;
+const allTransactionsGetController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const customReq = req;
+    try {
+        const transactions = yield Transaction_model_1.default.find({ user: customReq.user.id });
+        if (transactions) {
+            const response = {
+                status: 200,
+                message: 'successfully retrieved data',
+                data: transactions
+            };
+            res.json(response);
+        }
+        else {
+            const response = {
+                status: 404,
+                message: `Transactions not found`
+            };
+            res.json(response);
+        }
+    }
+    catch (error) {
+        console.log(error);
+        const response = {
+            status: 500,
+            message: 'Error occurred, get back soon',
+            error: { message: 'Internal server error' }
+        };
+        res.json(response);
+    }
+});
+exports.allTransactionsGetController = allTransactionsGetController;
 //# sourceMappingURL=transaction.controller.js.map

@@ -212,7 +212,7 @@ const passwordEditPatchController = (req, res) => __awaiter(void 0, void 0, void
                     res.json(response);
                 }
                 else {
-                    yield User_model_1.default.findOneAndUpdate({ _id: customReq.user.id }, { password: hash }, { new: true, session: null });
+                    yield User_model_1.default.findOneAndUpdate({ _id: customReq.user.id }, { password: hash }, { new: true });
                     const response = {
                         status: 200,
                         message: 'Password successfully updated'
