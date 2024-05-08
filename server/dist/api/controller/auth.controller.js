@@ -21,6 +21,7 @@ const signup_validation_1 = __importDefault(require("../../validation/signup.val
 const User_model_1 = __importDefault(require("../../model/User.model"));
 const login_validation_1 = __importDefault(require("../../validation/login.validation"));
 const passwordedit_validation_1 = __importDefault(require("../../validation/passwordedit.validation"));
+const Transaction_model_1 = __importDefault(require("../../model/Transaction.model"));
 const signUpPostController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, password, confirmPassword } = req.body;
     const validation = yield (0, signup_validation_1.default)({ username, email, password, confirmPassword });
@@ -247,6 +248,7 @@ const userDeleteController = (req, res) => __awaiter(void 0, void 0, void 0, fun
         if (customReq.user.id === userId) {
             const validUser = yield User_model_1.default.findOne({ _id: userId });
             yield User_model_1.default.deleteOne({ _id: validUser === null || validUser === void 0 ? void 0 : validUser._id });
+            yield Transaction_model_1.default.deleteMany({ user: userId });
             res.clearCookie('authorization');
             fs_1.default.unlink(`./${validUser.thumbnail}`, (err) => {
                 if (err)

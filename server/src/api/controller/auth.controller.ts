@@ -9,6 +9,7 @@ import User from "../../model/User.model";
 import logInValidation from "../../validation/login.validation";
 import passwordEditValidation from "../../validation/passwordedit.validation";
 import { CustomRequest } from "../../middlewares/isAuthenticated.middleware";
+import Transaction from "../../model/Transaction.model";
 
 interface ApiResponse {
   status: number;
@@ -246,6 +247,7 @@ const userDeleteController = async (req: Request, res: Response): Promise<void> 
     if (customReq.user!.id === userId) {
       const validUser = await User.findOne({_id: userId});
       await User.deleteOne({_id: validUser?._id});
+      await Transaction.deleteMany({user: userId});
       res.clearCookie('authorization');
       fs.unlink(`./${validUser!.thumbnail}`, (err) => {
         if (err) throw err
