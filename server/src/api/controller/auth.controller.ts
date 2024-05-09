@@ -122,58 +122,59 @@ const logInPostController = async (req: Request, res: Response): Promise<void> =
       }
     }
     res.json(validationresult)
-  } 
-  try {
-    if (validation.isValid) {
-      const validUser = await User.findOne({email});
-      jwt.sign({
-        id: validUser!._id,
-        username: validUser!.username, email: validUser!.email
-      }, env_variables.secret_key, { expiresIn: '12h' }, (err, token) => {
-        if (err) {
-          console.log(err);
-          const response: ApiResponse = {
-            status: 500,
-            message: 'Error occurred, get back soon',
-            error: { message: 'Internal server error' }
+  } else {
+    try {
+      if (validation.isValid) {
+        const validUser = await User.findOne({email});
+        jwt.sign({
+          id: validUser!._id,
+          username: validUser!.username, email: validUser!.email
+        }, env_variables.secret_key, { expiresIn: '12h' }, (err, token) => {
+          if (err) {
+            console.log(err);
+            const response: ApiResponse = {
+              status: 500,
+              message: 'Error occurred, get back soon',
+              error: { message: 'Internal server error' }
+            }
+            res.json(response)
           }
-          res.json(response)
-        }
-        if (token) {
-          res.cookie('authorization', 'Bearer ' + token, { expires: new Date(Date.now() + 12 * 3600000) })
-          const response: ApiResponse = {
-            status: 200,
-            message: 'Successfully loggedin',
-            isAuthenticated: true,
-            data: {
-              financialState: {
-                netProfit: validUser!.financialState.netProfit,
-                netLose: validUser!.financialState.netLose,
-                netPayableDue: validUser!.financialState.netPayableDue,
-                netReceivableDue: validUser!.financialState.netReceivableDue
+          if (token) {
+            res.cookie('authorization', 'Bearer ' + token, { expires: new Date(Date.now() + 12 * 3600000) })
+            const response: ApiResponse = {
+              status: 200,
+              message: 'Successfully loggedin',
+              isAuthenticated: true,
+              data: {
+                financialState: {
+                  netProfit: validUser!.financialState.netProfit,
+                  netLose: validUser!.financialState.netLose,
+                  netPayableDue: validUser!.financialState.netPayableDue,
+                  netReceivableDue: validUser!.financialState.netReceivableDue
+                }
               }
             }
+            res.json(response)
+          } else {
+            const response: ApiResponse = {
+              status: 401,
+              message: 'Authorization failed',
+              isAuthenticated: false
+            }
+            res.json(response)
           }
-          res.json(response)
-        } else {
-          const response: ApiResponse = {
-            status: 401,
-            message: 'Authorization failed',
-            isAuthenticated: false
-          }
-          res.json(response)
-        }
-      })
+        })
+      }
+    } catch (error) {
+      console.log(error);
+      const response: ApiResponse = {
+        status: 500,
+        message: 'Error occurred, get back soon',
+        error: { message: 'Internal server error' }
+      }
+      res.json(response)
     }
-  } catch (error) {
-    console.log(error);
-    const response: ApiResponse = {
-      status: 500,
-      message: 'Error occurred, get back soon',
-      error: { message: 'Internal server error' }
-    }
-    res.json(response)
-  }
+  } 
 }
 
 const logoutPostController = async (req: Request, res: Response): Promise<void> => {
@@ -211,46 +212,47 @@ const passwordEditPatchController = async (req: Request, res: Response): Promise
       }
     }
     res.json(validationresult)
-  }
-  try {
-    if (customReq.user!.id === userId) {
-      bcrypt.hash(newPassword, 10,  async(err, hash) => {
-        if (err) {
-          console.log(err);
-          const response: ApiResponse = {
-            status: 500,
-            message: 'Error occurred, get back soon',
-            error: { message: 'Internal server error' }
+  } else {
+    try {
+      if (customReq.user!.id === userId) {
+        bcrypt.hash(newPassword, 10,  async(err, hash) => {
+          if (err) {
+            console.log(err);
+            const response: ApiResponse = {
+              status: 500,
+              message: 'Error occurred, get back soon',
+              error: { message: 'Internal server error' }
+            }
+            res.json(response)
+          } else {
+            await User.findOneAndUpdate( 
+              {_id: customReq.user!.id}, 
+              { password: hash }, 
+              {new: true}
+            )
+            const response: ApiResponse = {
+              status: 200,
+              message: 'Password successfully updated'
+            }
+            res.json(response)
           }
-          res.json(response)
-        } else {
-          await User.findOneAndUpdate( 
-            {_id: customReq.user!.id}, 
-            { password: hash }, 
-            {new: true}
-          )
-          const response: ApiResponse = {
-            status: 200,
-            message: 'Password successfully updated'
-          }
-          res.json(response)
+        })
+      } else {
+        const response: ApiResponse = {
+          status: 403,
+          message: `Can't update password`
         }
-      })
-    } else {
+        res.json(response)
+      }
+    } catch (error) {
+      console.log(error);
       const response: ApiResponse = {
-        status: 403,
-        message: `Can't update password`
+        status: 500,
+        message: 'Error occurred, get back soon',
+        error: { message: 'Internal server error' }
       }
       res.json(response)
     }
-  } catch (error) {
-    console.log(error);
-    const response: ApiResponse = {
-      status: 500,
-      message: 'Error occurred, get back soon',
-      error: { message: 'Internal server error' }
-    }
-    res.json(response)
   }
 }
 

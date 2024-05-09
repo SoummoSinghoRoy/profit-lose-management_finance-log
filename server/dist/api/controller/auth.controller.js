@@ -117,58 +117,60 @@ const logInPostController = (req, res) => __awaiter(void 0, void 0, void 0, func
         };
         res.json(validationresult);
     }
-    try {
-        if (validation.isValid) {
-            const validUser = yield User_model_1.default.findOne({ email });
-            jsonwebtoken_1.default.sign({
-                id: validUser._id,
-                username: validUser.username, email: validUser.email
-            }, custom_env_variables_1.default.secret_key, { expiresIn: '12h' }, (err, token) => {
-                if (err) {
-                    console.log(err);
-                    const response = {
-                        status: 500,
-                        message: 'Error occurred, get back soon',
-                        error: { message: 'Internal server error' }
-                    };
-                    res.json(response);
-                }
-                if (token) {
-                    res.cookie('authorization', 'Bearer ' + token, { expires: new Date(Date.now() + 12 * 3600000) });
-                    const response = {
-                        status: 200,
-                        message: 'Successfully loggedin',
-                        isAuthenticated: true,
-                        data: {
-                            financialState: {
-                                netProfit: validUser.financialState.netProfit,
-                                netLose: validUser.financialState.netLose,
-                                netPayableDue: validUser.financialState.netPayableDue,
-                                netReceivableDue: validUser.financialState.netReceivableDue
+    else {
+        try {
+            if (validation.isValid) {
+                const validUser = yield User_model_1.default.findOne({ email });
+                jsonwebtoken_1.default.sign({
+                    id: validUser._id,
+                    username: validUser.username, email: validUser.email
+                }, custom_env_variables_1.default.secret_key, { expiresIn: '12h' }, (err, token) => {
+                    if (err) {
+                        console.log(err);
+                        const response = {
+                            status: 500,
+                            message: 'Error occurred, get back soon',
+                            error: { message: 'Internal server error' }
+                        };
+                        res.json(response);
+                    }
+                    if (token) {
+                        res.cookie('authorization', 'Bearer ' + token, { expires: new Date(Date.now() + 12 * 3600000) });
+                        const response = {
+                            status: 200,
+                            message: 'Successfully loggedin',
+                            isAuthenticated: true,
+                            data: {
+                                financialState: {
+                                    netProfit: validUser.financialState.netProfit,
+                                    netLose: validUser.financialState.netLose,
+                                    netPayableDue: validUser.financialState.netPayableDue,
+                                    netReceivableDue: validUser.financialState.netReceivableDue
+                                }
                             }
-                        }
-                    };
-                    res.json(response);
-                }
-                else {
-                    const response = {
-                        status: 401,
-                        message: 'Authorization failed',
-                        isAuthenticated: false
-                    };
-                    res.json(response);
-                }
-            });
+                        };
+                        res.json(response);
+                    }
+                    else {
+                        const response = {
+                            status: 401,
+                            message: 'Authorization failed',
+                            isAuthenticated: false
+                        };
+                        res.json(response);
+                    }
+                });
+            }
         }
-    }
-    catch (error) {
-        console.log(error);
-        const response = {
-            status: 500,
-            message: 'Error occurred, get back soon',
-            error: { message: 'Internal server error' }
-        };
-        res.json(response);
+        catch (error) {
+            console.log(error);
+            const response = {
+                status: 500,
+                message: 'Error occurred, get back soon',
+                error: { message: 'Internal server error' }
+            };
+            res.json(response);
+        }
     }
 });
 exports.logInPostController = logInPostController;
@@ -208,44 +210,46 @@ const passwordEditPatchController = (req, res) => __awaiter(void 0, void 0, void
         };
         res.json(validationresult);
     }
-    try {
-        if (customReq.user.id === userId) {
-            bcrypt_1.default.hash(newPassword, 10, (err, hash) => __awaiter(void 0, void 0, void 0, function* () {
-                if (err) {
-                    console.log(err);
-                    const response = {
-                        status: 500,
-                        message: 'Error occurred, get back soon',
-                        error: { message: 'Internal server error' }
-                    };
-                    res.json(response);
-                }
-                else {
-                    yield User_model_1.default.findOneAndUpdate({ _id: customReq.user.id }, { password: hash }, { new: true });
-                    const response = {
-                        status: 200,
-                        message: 'Password successfully updated'
-                    };
-                    res.json(response);
-                }
-            }));
+    else {
+        try {
+            if (customReq.user.id === userId) {
+                bcrypt_1.default.hash(newPassword, 10, (err, hash) => __awaiter(void 0, void 0, void 0, function* () {
+                    if (err) {
+                        console.log(err);
+                        const response = {
+                            status: 500,
+                            message: 'Error occurred, get back soon',
+                            error: { message: 'Internal server error' }
+                        };
+                        res.json(response);
+                    }
+                    else {
+                        yield User_model_1.default.findOneAndUpdate({ _id: customReq.user.id }, { password: hash }, { new: true });
+                        const response = {
+                            status: 200,
+                            message: 'Password successfully updated'
+                        };
+                        res.json(response);
+                    }
+                }));
+            }
+            else {
+                const response = {
+                    status: 403,
+                    message: `Can't update password`
+                };
+                res.json(response);
+            }
         }
-        else {
+        catch (error) {
+            console.log(error);
             const response = {
-                status: 403,
-                message: `Can't update password`
+                status: 500,
+                message: 'Error occurred, get back soon',
+                error: { message: 'Internal server error' }
             };
             res.json(response);
         }
-    }
-    catch (error) {
-        console.log(error);
-        const response = {
-            status: 500,
-            message: 'Error occurred, get back soon',
-            error: { message: 'Internal server error' }
-        };
-        res.json(response);
     }
 });
 exports.passwordEditPatchController = passwordEditPatchController;

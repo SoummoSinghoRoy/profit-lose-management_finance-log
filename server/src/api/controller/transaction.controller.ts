@@ -36,43 +36,73 @@ const transactionCreatePostController = async (req: Request, res: Response): Pro
       }
     }
     res.json(validationresult)
-  }
-  try {
-    const user = await User.findById(customReq.user!.id)
-    const registeredTransaction = new Transaction({
-      transactionType,
-      to_from,
-      amount: {
-        total,
-        paid: transactionType === 'income' ? 0 : paid,
-        received: transactionType === 'expense' ? 0 : received,
-        due
-      },
-      date,
-      description,
-      user: user!._id
-    })
-    const transaction = await registeredTransaction.save();
-    const response: ApiResponse = {
-      status: 200,
-      message: 'Transaction successfully created',
-      data: {
-        id: transaction._id,
-        transactionType: transaction.transactionType,
-        to_from: transaction.to_from,
-        date: transaction.date,
-        description: transaction.description
+  } else {
+    try {
+      const user = await User.findById(customReq.user!.id)
+      const registeredTransaction = new Transaction({
+        transactionType,
+        to_from,
+        amount: {
+          total,
+          paid: transactionType === 'income' ? 0 : paid,
+          received: transactionType === 'expense' ? 0 : received,
+          due
+        },
+        date,
+        description,
+        user: user!._id
+      })
+      const transaction = await registeredTransaction.save();
+      if(transactionType === 'income') {
+        const netLoseCalculation = user!.financialState.netLose !== 0 && user!.financialState.netLose >=  user!.financialState.netProfit ? user!.financialState.netLose - transaction.amount.received : 0;
+  
+        await User.findOneAndUpdate(
+          {_id: user!._id},
+          {$set: {
+            "financialState": {
+              "netProfit": user!.financialState.netProfit + transaction.amount.received,
+              "netLose": netLoseCalculation,
+              "netPayableDue": user!.financialState.netPayableDue,
+              "netReceivableDue": user!.financialState.netReceivableDue + transaction.amount.due,
+            }
+          }}
+        );
+      } else if(transactionType === 'expense') {
+        const netProfitCalculation = user!.financialState.netProfit !== 0 && user!.financialState.netProfit >=  user!.financialState.netLose? user!.financialState.netProfit - transaction.amount.paid : 0;
+  
+        await User.findOneAndUpdate(
+          {_id: user!._id},
+          {$set: {
+            "financialState": {
+              "netProfit": netProfitCalculation,
+              "netLose": user!.financialState.netLose + transaction.amount.paid,
+              "netPayableDue": user!.financialState.netPayableDue + transaction.amount.due,
+              "netReceivableDue": user!.financialState.netReceivableDue
+            }
+          }}
+        );
       }
+      const response: ApiResponse = {
+        status: 200,
+        message: 'Transaction successfully created',
+        data: {
+          id: transaction._id,
+          transactionType: transaction.transactionType,
+          to_from: transaction.to_from,
+          date: transaction.date,
+          description: transaction.description
+        }
+      }
+      res.json(response)
+    } catch (error) {
+      console.log(error);
+      const response: ApiResponse = {
+        status: 500,
+        message: 'Error occurred, get back soon',
+        error: { message: 'Internal server error' }
+      }
+      res.json(response)
     }
-    res.json(response)
-  } catch (error) {
-    console.log(error);
-    const response: ApiResponse = {
-      status: 500,
-      message: 'Error occurred, get back soon',
-      error: { message: 'Internal server error' }
-    }
-    res.json(response)
   }
 }
 
@@ -93,43 +123,44 @@ const transactionEditPutController = async (req: Request, res: Response): Promis
         }
       }
       res.json(validationresult)
-    }
-    try {
-      await Transaction.findOneAndUpdate(
-        {_id: validTransaction._id },
-        { transactionType,
-          to_from,
-          amount: {
-            total,
-            paid: transactionType === 'income' ? 0 : paid,
-            received: transactionType === 'expense' ? 0 : received,
-            due
-          },
-          date,
-          description },
-        { new: true } 
-      );
-      const updatedTransaction = await Transaction.findById(transactionId);
-      const response: ApiResponse = {
-        status: 200,
-        message: 'Transaction successfully updated',
-        data: {
-          id: updatedTransaction!._id,
-          transactionType: updatedTransaction!.transactionType,
-          to_from: updatedTransaction!.to_from,
-          date: updatedTransaction!.date,
-          description: updatedTransaction!.description
+    } else {
+      try {
+        await Transaction.findOneAndUpdate(
+          {_id: validTransaction._id },
+          { transactionType,
+            to_from,
+            amount: {
+              total,
+              paid: transactionType === 'income' ? 0 : paid,
+              received: transactionType === 'expense' ? 0 : received,
+              due
+            },
+            date,
+            description },
+          { new: true } 
+        );
+        const updatedTransaction = await Transaction.findById(transactionId);
+        const response: ApiResponse = {
+          status: 200,
+          message: 'Transaction successfully updated',
+          data: {
+            id: updatedTransaction!._id,
+            transactionType: updatedTransaction!.transactionType,
+            to_from: updatedTransaction!.to_from,
+            date: updatedTransaction!.date,
+            description: updatedTransaction!.description
+          }
         }
+        res.json(response)
+      } catch (error) {
+        console.log(error);
+        const response: ApiResponse = {
+          status: 500,
+          message: 'Error occurred, get back soon',
+          error: { message: 'Internal server error' }
+        }
+        res.json(response)
       }
-      res.json(response)
-    } catch (error) {
-      console.log(error);
-      const response: ApiResponse = {
-        status: 500,
-        message: 'Error occurred, get back soon',
-        error: { message: 'Internal server error' }
-      }
-      res.json(response)
     }
   } else {
     const response: ApiResponse = {
