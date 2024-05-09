@@ -20,7 +20,25 @@ const userSchema = new mongoose_1.Schema({
         required: true,
         minlength: 6
     },
-    thumbnail: String
+    thumbnail: String,
+    financialState: {
+        netProfit: {
+            type: Number,
+            default: 0
+        },
+        netLose: {
+            type: Number,
+            default: 0
+        },
+        netPayableDue: {
+            type: Number,
+            default: 0
+        },
+        netReceivableDue: {
+            type: Number,
+            default: 0
+        }
+    }
 }, {
     timestamps: true
 });

@@ -138,7 +138,15 @@ const logInPostController = (req, res) => __awaiter(void 0, void 0, void 0, func
                     const response = {
                         status: 200,
                         message: 'Successfully loggedin',
-                        isAuthenticated: true
+                        isAuthenticated: true,
+                        data: {
+                            financialState: {
+                                netProfit: validUser.financialState.netProfit,
+                                netLose: validUser.financialState.netLose,
+                                netPayableDue: validUser.financialState.netPayableDue,
+                                netReceivableDue: validUser.financialState.netReceivableDue
+                            }
+                        }
                     };
                     res.json(response);
                 }

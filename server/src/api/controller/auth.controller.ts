@@ -18,9 +18,15 @@ interface ApiResponse {
   };
   message?: string;
   data?: {
-    id: any;
-    username: string;
-    email: string;
+    id?: any;
+    username?: string;
+    email?: string;
+    financialState?: {
+      netProfit: number;
+      netLose: number;
+      netPayableDue: number;
+      netReceivableDue: number;
+    }
   }
   isAuthenticated?: boolean;
 }
@@ -138,7 +144,15 @@ const logInPostController = async (req: Request, res: Response): Promise<void> =
           const response: ApiResponse = {
             status: 200,
             message: 'Successfully loggedin',
-            isAuthenticated: true
+            isAuthenticated: true,
+            data: {
+              financialState: {
+                netProfit: validUser!.financialState.netProfit,
+                netLose: validUser!.financialState.netLose,
+                netPayableDue: validUser!.financialState.netPayableDue,
+                netReceivableDue: validUser!.financialState.netReceivableDue
+              }
+            }
           }
           res.json(response)
         } else {
