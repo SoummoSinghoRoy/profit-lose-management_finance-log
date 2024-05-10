@@ -10,6 +10,7 @@ interface IUser {
     netLose: number;
     netPayableDue: number;
     netReceivableDue: number;
+    totalTransaction: number;
   }
 }
 
@@ -47,6 +48,10 @@ const userSchema= new Schema<IUser> ({
       default: 0
     },
     netReceivableDue: {
+      type: Number,
+      default: 0
+    },
+    totalTransaction: {
       type: Number,
       default: 0
     }

@@ -37,6 +37,10 @@ const userSchema = new mongoose_1.Schema({
         netReceivableDue: {
             type: Number,
             default: 0
+        },
+        totalTransaction: {
+            type: Number,
+            default: 0
         }
     }
 }, {

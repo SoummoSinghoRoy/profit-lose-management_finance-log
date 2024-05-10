@@ -145,7 +145,8 @@ const logInPostController = (req, res) => __awaiter(void 0, void 0, void 0, func
                                     netProfit: validUser.financialState.netProfit,
                                     netLose: validUser.financialState.netLose,
                                     netPayableDue: validUser.financialState.netPayableDue,
-                                    netReceivableDue: validUser.financialState.netReceivableDue
+                                    netReceivableDue: validUser.financialState.netReceivableDue,
+                                    totalTransaction: validUser.financialState.totalTransaction
                                 }
                             }
                         };

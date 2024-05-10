@@ -26,6 +26,7 @@ interface ApiResponse {
       netLose: number;
       netPayableDue: number;
       netReceivableDue: number;
+      totalTransaction: number;
     }
   }
   isAuthenticated?: boolean;
@@ -150,7 +151,8 @@ const logInPostController = async (req: Request, res: Response): Promise<void> =
                   netProfit: validUser!.financialState.netProfit,
                   netLose: validUser!.financialState.netLose,
                   netPayableDue: validUser!.financialState.netPayableDue,
-                  netReceivableDue: validUser!.financialState.netReceivableDue
+                  netReceivableDue: validUser!.financialState.netReceivableDue,
+                  totalTransaction: validUser!.financialState.totalTransaction
                 }
               }
             }
