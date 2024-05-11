@@ -4,7 +4,7 @@ import { CustomRequest } from "../../middlewares/isAuthenticated.middleware";
 import transactionValidation from "../../validation/transaction.validation";
 import Transaction from "../../model/Transaction.model";
 import User from "../../model/User.model";
-
+import updateDueTransactionValidation from "../../validation/updateDueTransaction.validation";
 
 interface ApiResponse {
   status: number;
@@ -152,27 +152,25 @@ const transactionEditPutController = async (req: Request, res: Response): Promis
         );
         const updatedTransaction = await Transaction.findById(transactionId);
         const user = await User.findById(customReq.user!.id);
-        if(transactionType === 'income') {
-          const netLoseCalculation = user!.financialState.netLose !== 0 && user!.financialState.netLose >=  user!.financialState.netProfit ? (user!.financialState.netLose + validTransaction!.amount.received) - updatedTransaction!.amount.received : 0;
+        if(updatedTransaction!.transactionType === 'income') {
           await User.findOneAndUpdate(
             {_id: user!._id},
             {$set: {
               "financialState": {
                 "netProfit": (user!.financialState.netProfit - validTransaction!.amount.received) + updatedTransaction!.amount.received,
-                "netLose": netLoseCalculation,
+                "netLose": (user!.financialState.netLose + validTransaction!.amount.received) - updatedTransaction!.amount.received,
                 "netPayableDue": user!.financialState.netPayableDue,
                 "netReceivableDue": (user!.financialState.netReceivableDue - validTransaction.amount.due) + updatedTransaction!.amount.due,
                 "totalTransaction": (user!.financialState.totalTransaction - validTransaction.amount.total) + updatedTransaction!.amount.total
               }
             }}
           )
-        } else if(transactionType === 'expense') {
-          const netProfitCalculation = user!.financialState.netProfit !== 0 && user!.financialState.netProfit >=  user!.financialState.netLose? (user!.financialState.netProfit + validTransaction!.amount.paid) - updatedTransaction!.amount.paid : 0;
+        } else if(updatedTransaction!.transactionType === 'expense') {
           await User.findOneAndUpdate(
             {_id: user!._id},
             {$set: {
               "financialState": {
-                "netProfit": netProfitCalculation,
+                "netProfit": (user!.financialState.netProfit + validTransaction!.amount.paid) - updatedTransaction!.amount.paid,
                 "netLose": (user!.financialState.netLose - validTransaction!.amount.paid) + updatedTransaction!.amount.paid,
                 "netPayableDue": (user!.financialState.netPayableDue - validTransaction.amount.due) + updatedTransaction!.amount.due,
                 "netReceivableDue": user!.financialState.netReceivableDue,
@@ -217,6 +215,104 @@ const transactionEditPutController = async (req: Request, res: Response): Promis
     res.json(response)
   }
 }
+
+const dueTransactionUpdateController = async (req: Request, res: Response): Promise<void> => {
+  const customReq = req as CustomRequest;
+  const { transactionId } = req.params;
+  const { paid, received, currentDue, date } = req.body;
+
+  const validTransaction = await Transaction.findById(transactionId);
+  const transactionType = validTransaction!.transactionType;
+  if (validTransaction) {
+    const validation = await updateDueTransactionValidation({transactionId ,transactionType, paid, received, currentDue, date});
+    if(!validation.isValid) {
+      const validationresult: ApiResponse = {
+        status: 400,
+        message: 'Error occurred',
+        error: {
+          message: validation.error
+        }
+      }
+      res.json(validationresult)
+    } else {
+      try {
+        await Transaction.findOneAndUpdate(
+          {_id: validTransaction._id},
+          {$set: {
+            "amount": {
+              "total": validTransaction.amount.total,
+              "paid": transactionType === 'expense' ? validTransaction.amount.paid + paid : validTransaction.amount.paid,
+              "received": transactionType === 'income' ? validTransaction.amount.received + received : validTransaction.amount.received,
+              "due": currentDue
+            },
+            "date": date
+          }}
+        )
+        const dueUpdatedTransaction = await Transaction.findById(transactionId);
+        const user = await User.findById(customReq.user!.id);
+        if (dueUpdatedTransaction!.transactionType === 'income') {
+          await User.findOneAndUpdate(
+            {_id: user!._id},
+            {$set: {
+              "financialState": {
+                "netProfit": user!.financialState.netProfit + received,
+                "netLose": user!.financialState.netLose - received,
+                "netPayableDue": user!.financialState.netPayableDue,
+                "netReceivableDue": user!.financialState.netReceivableDue - received,
+                "totalTransaction": user!.financialState.totalTransaction
+              }
+            }}
+          )
+        } else if (dueUpdatedTransaction!.transactionType === 'expense') {
+          await User.findOneAndUpdate(
+            {_id: user!._id},
+            {$set: {
+              "financialState": {
+                "netProfit": user!.financialState.netProfit - paid,
+                "netLose": user!.financialState.netLose + paid,
+                "netPayableDue": user!.financialState.netPayableDue - paid,
+                "netReceivableDue": user!.financialState.netReceivableDue,
+                "totalTransaction": user!.financialState.totalTransaction
+              }
+            }}
+          )
+        }
+        const response: ApiResponse = {
+          status: 200,
+          message: 'Due Transaction successfully updated',
+          data: {
+            id: dueUpdatedTransaction!._id,
+            transactionType: dueUpdatedTransaction!.transactionType,
+            to_from: dueUpdatedTransaction!.to_from,
+            amount: {
+              total: dueUpdatedTransaction!.amount.total,
+              paid: dueUpdatedTransaction!.amount.paid,
+              received: dueUpdatedTransaction!.amount.received,
+              due: dueUpdatedTransaction!.amount.due
+            },
+            date: dueUpdatedTransaction!.date,
+            description: dueUpdatedTransaction!.description
+          }
+        }
+        res.json(response)
+      } catch (error) {
+        console.log(error);
+        const response: ApiResponse = {
+          status: 500,
+          message: 'Error occurred, get back soon',
+          error: { message: 'Internal server error' }
+        }
+        res.json(response)
+      }
+    }
+  } else {
+    const response: ApiResponse = {
+      status: 404,
+      message: `Transaction item not found`
+    }
+    res.json(response)
+  }
+} 
 
 const allTransactionsGetController = async (req: Request, res: Response): Promise<void> => {
   const customReq = req as CustomRequest;
@@ -305,4 +401,4 @@ const transactionDeleteController = async (req: Request, res: Response): Promise
   }
 }
 
-export { transactionCreatePostController, transactionEditPutController, allTransactionsGetController, transactionDeleteController };
+export { transactionCreatePostController, transactionEditPutController, dueTransactionUpdateController, allTransactionsGetController, transactionDeleteController };

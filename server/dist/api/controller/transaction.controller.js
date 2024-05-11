@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.transactionDeleteController = exports.allTransactionsGetController = exports.transactionEditPutController = exports.transactionCreatePostController = void 0;
+exports.transactionDeleteController = exports.allTransactionsGetController = exports.dueTransactionUpdateController = exports.transactionEditPutController = exports.transactionCreatePostController = void 0;
 const transaction_validation_1 = __importDefault(require("../../validation/transaction.validation"));
 const Transaction_model_1 = __importDefault(require("../../model/Transaction.model"));
 const User_model_1 = __importDefault(require("../../model/User.model"));
+const updateDueTransaction_validation_1 = __importDefault(require("../../validation/updateDueTransaction.validation"));
 const transactionCreatePostController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const customReq = req;
     const { transaction_type, to_from, total, paid, received, due, date, description } = req.body;
@@ -77,6 +78,12 @@ const transactionCreatePostController = (req, res) => __awaiter(void 0, void 0, 
                     id: transaction._id,
                     transactionType: transaction.transactionType,
                     to_from: transaction.to_from,
+                    amount: {
+                        total: transaction.amount.total,
+                        paid: transaction.amount.paid,
+                        received: transaction.amount.received,
+                        due: transaction.amount.due
+                    },
                     date: transaction.date,
                     description: transaction.description
                 }
@@ -127,23 +134,21 @@ const transactionEditPutController = (req, res) => __awaiter(void 0, void 0, voi
                     description }, { new: true });
                 const updatedTransaction = yield Transaction_model_1.default.findById(transactionId);
                 const user = yield User_model_1.default.findById(customReq.user.id);
-                if (transactionType === 'income') {
-                    const netLoseCalculation = user.financialState.netLose !== 0 && user.financialState.netLose >= user.financialState.netProfit ? (user.financialState.netLose + validTransaction.amount.received) - updatedTransaction.amount.received : 0;
+                if (updatedTransaction.transactionType === 'income') {
                     yield User_model_1.default.findOneAndUpdate({ _id: user._id }, { $set: {
                             "financialState": {
                                 "netProfit": (user.financialState.netProfit - validTransaction.amount.received) + updatedTransaction.amount.received,
-                                "netLose": netLoseCalculation,
+                                "netLose": (user.financialState.netLose + validTransaction.amount.received) - updatedTransaction.amount.received,
                                 "netPayableDue": user.financialState.netPayableDue,
                                 "netReceivableDue": (user.financialState.netReceivableDue - validTransaction.amount.due) + updatedTransaction.amount.due,
                                 "totalTransaction": (user.financialState.totalTransaction - validTransaction.amount.total) + updatedTransaction.amount.total
                             }
                         } });
                 }
-                else if (transactionType === 'expense') {
-                    const netProfitCalculation = user.financialState.netProfit !== 0 && user.financialState.netProfit >= user.financialState.netLose ? (user.financialState.netProfit + validTransaction.amount.paid) - updatedTransaction.amount.paid : 0;
+                else if (updatedTransaction.transactionType === 'expense') {
                     yield User_model_1.default.findOneAndUpdate({ _id: user._id }, { $set: {
                             "financialState": {
-                                "netProfit": netProfitCalculation,
+                                "netProfit": (user.financialState.netProfit + validTransaction.amount.paid) - updatedTransaction.amount.paid,
                                 "netLose": (user.financialState.netLose - validTransaction.amount.paid) + updatedTransaction.amount.paid,
                                 "netPayableDue": (user.financialState.netPayableDue - validTransaction.amount.due) + updatedTransaction.amount.due,
                                 "netReceivableDue": user.financialState.netReceivableDue,
@@ -158,6 +163,12 @@ const transactionEditPutController = (req, res) => __awaiter(void 0, void 0, voi
                         id: updatedTransaction._id,
                         transactionType: updatedTransaction.transactionType,
                         to_from: updatedTransaction.to_from,
+                        amount: {
+                            total: updatedTransaction.amount.total,
+                            paid: updatedTransaction.amount.paid,
+                            received: updatedTransaction.amount.received,
+                            due: updatedTransaction.amount.due
+                        },
                         date: updatedTransaction.date,
                         description: updatedTransaction.description
                     }
@@ -184,6 +195,98 @@ const transactionEditPutController = (req, res) => __awaiter(void 0, void 0, voi
     }
 });
 exports.transactionEditPutController = transactionEditPutController;
+const dueTransactionUpdateController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const customReq = req;
+    const { transactionId } = req.params;
+    const { paid, received, currentDue, date } = req.body;
+    const validTransaction = yield Transaction_model_1.default.findById(transactionId);
+    const transactionType = validTransaction.transactionType;
+    if (validTransaction) {
+        const validation = yield (0, updateDueTransaction_validation_1.default)({ transactionId, transactionType, paid, received, currentDue, date });
+        if (!validation.isValid) {
+            const validationresult = {
+                status: 400,
+                message: 'Error occurred',
+                error: {
+                    message: validation.error
+                }
+            };
+            res.json(validationresult);
+        }
+        else {
+            try {
+                yield Transaction_model_1.default.findOneAndUpdate({ _id: validTransaction._id }, { $set: {
+                        "amount": {
+                            "total": validTransaction.amount.total,
+                            "paid": transactionType === 'expense' ? validTransaction.amount.paid + paid : validTransaction.amount.paid,
+                            "received": transactionType === 'income' ? validTransaction.amount.received + received : validTransaction.amount.received,
+                            "due": currentDue
+                        },
+                        "date": date
+                    } });
+                const dueUpdatedTransaction = yield Transaction_model_1.default.findById(transactionId);
+                const user = yield User_model_1.default.findById(customReq.user.id);
+                if (dueUpdatedTransaction.transactionType === 'income') {
+                    yield User_model_1.default.findOneAndUpdate({ _id: user._id }, { $set: {
+                            "financialState": {
+                                "netProfit": user.financialState.netProfit + received,
+                                "netLose": user.financialState.netLose - received,
+                                "netPayableDue": user.financialState.netPayableDue,
+                                "netReceivableDue": user.financialState.netReceivableDue - received,
+                                "totalTransaction": user.financialState.totalTransaction
+                            }
+                        } });
+                }
+                else if (dueUpdatedTransaction.transactionType === 'expense') {
+                    yield User_model_1.default.findOneAndUpdate({ _id: user._id }, { $set: {
+                            "financialState": {
+                                "netProfit": user.financialState.netProfit - paid,
+                                "netLose": user.financialState.netLose + paid,
+                                "netPayableDue": user.financialState.netPayableDue - paid,
+                                "netReceivableDue": user.financialState.netReceivableDue,
+                                "totalTransaction": user.financialState.totalTransaction
+                            }
+                        } });
+                }
+                const response = {
+                    status: 200,
+                    message: 'Due Transaction successfully updated',
+                    data: {
+                        id: dueUpdatedTransaction._id,
+                        transactionType: dueUpdatedTransaction.transactionType,
+                        to_from: dueUpdatedTransaction.to_from,
+                        amount: {
+                            total: dueUpdatedTransaction.amount.total,
+                            paid: dueUpdatedTransaction.amount.paid,
+                            received: dueUpdatedTransaction.amount.received,
+                            due: dueUpdatedTransaction.amount.due
+                        },
+                        date: dueUpdatedTransaction.date,
+                        description: dueUpdatedTransaction.description
+                    }
+                };
+                res.json(response);
+            }
+            catch (error) {
+                console.log(error);
+                const response = {
+                    status: 500,
+                    message: 'Error occurred, get back soon',
+                    error: { message: 'Internal server error' }
+                };
+                res.json(response);
+            }
+        }
+    }
+    else {
+        const response = {
+            status: 404,
+            message: `Transaction item not found`
+        };
+        res.json(response);
+    }
+});
+exports.dueTransactionUpdateController = dueTransactionUpdateController;
 const allTransactionsGetController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const customReq = req;
     try {
