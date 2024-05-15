@@ -7,7 +7,12 @@ interface AuthApiRespone {
 async function signupPostRequest(signupRequestBody: any): Promise<AuthApiRespone> {
   try {
     const { data } = await axios.post('http://localhost:7272/api/auth/signup',
-      signupRequestBody
+      signupRequestBody,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
     )
     return data;
   } catch (error) {
