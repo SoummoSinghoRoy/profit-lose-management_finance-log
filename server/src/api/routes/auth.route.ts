@@ -25,7 +25,7 @@ const uploadHandle = async(req: Request, res: Response, next: NextFunction): Pro
           message: {thumbnail: `Attachment must be less than 250kb`}
         }
       }
-      return res.json(response); 
+      res.json(response); 
     } else {
       next();
     }
