@@ -25,4 +25,26 @@ async function signupPostRequest(signupRequestBody: any): Promise<AuthApiRespone
   }
 }
 
-export { signupPostRequest };
+
+async function loginPostRequest(loginRequestBody: any): Promise<AuthApiRespone> {
+  try {
+    const { data } = await axios.post('http://localhost:7272/api/auth/login',
+      loginRequestBody,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    return data;
+  } catch (error) {
+    console.log(error);
+    const res: AuthApiRespone = {
+      status: 500,
+      message: `Internal server error`
+    }
+    return res;
+  }
+}
+
+export { signupPostRequest, loginPostRequest };

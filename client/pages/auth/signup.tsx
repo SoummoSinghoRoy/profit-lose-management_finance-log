@@ -1,5 +1,6 @@
 import { useEffect, useState  } from "react";
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
+import Link from "next/link";
 
 import { signupPostRequest } from "@/utility/fetcher";
 import Alert from "@/components/alert";
@@ -41,7 +42,7 @@ const SignUpPage = () => {
       const response = await signupPostRequest(signupRequestBody);
       if (response.status !== 200) {
         setAlertMessage(response.message);
-        setAlertStatus(response.status)
+        setAlertStatus(response.status);
         const apiError: IError = {
           message: {
             username: response.error?.message?.username || '',
@@ -88,7 +89,7 @@ const SignUpPage = () => {
       }, 15000); 
       return () => clearTimeout(timeoutId);
     }
-  }, [error, signupState, file]);
+  }, []);
 
   return(
     <div className="container-fluid container-lg container-md">
@@ -175,12 +176,11 @@ const SignUpPage = () => {
                   </div>
                   <div className="d-flex justify-content-between">
                     <button type="submit" className="btn btn-outline-success">signup</button>
-                    <p>Already have an account? <a href="/auth/login">login</a></p>
+                    <p>Already have an account? <Link href="/auth/login">login</Link></p>
                   </div>
               </form>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -188,3 +188,4 @@ const SignUpPage = () => {
 }
 
 export default SignUpPage;
+export type {IError};
