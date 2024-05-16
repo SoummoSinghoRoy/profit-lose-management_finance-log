@@ -24,11 +24,12 @@ const uploadHandle = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
             console.log(err);
             const response = {
                 status: 400,
+                message: 'Error occurred',
                 error: {
-                    message: `Attachment must be less than 250kb`
+                    message: { thumbnail: `Attachment must be less than 250kb` }
                 }
             };
-            res.json(response);
+            return res.json(response);
         }
         else {
             next();

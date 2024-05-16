@@ -8,6 +8,7 @@ const fileupload = upload.single('thumbnail');
 
 interface FileHandleResponse {
   status: number;
+  message: string;
   error?: {
     message: string | object
   }
@@ -19,11 +20,12 @@ const uploadHandle = async(req: Request, res: Response, next: NextFunction): Pro
       console.log(err);
       const response: FileHandleResponse = {
         status: 400,
+        message: 'Error occurred', 
         error: {
-          message: `Attachment must be less than 250kb`
+          message: {thumbnail: `Attachment must be less than 250kb`}
         }
       }
-      res.json(response); 
+      return res.json(response); 
     } else {
       next();
     }
