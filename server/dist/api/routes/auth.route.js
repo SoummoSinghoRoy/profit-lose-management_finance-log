@@ -29,7 +29,7 @@ const uploadHandle = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
                     message: { thumbnail: `Attachment must be less than 250kb` }
                 }
             };
-            return res.json(response);
+            res.json(response);
         }
         else {
             next();
