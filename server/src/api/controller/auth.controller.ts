@@ -147,6 +147,7 @@ const logInPostController = async (req: Request, res: Response): Promise<void> =
               message: 'Successfully loggedin',
               isAuthenticated: true,
               data: {
+                id: validUser!._id,
                 username: validUser!.username,
                 financialState: {
                   netProfit: validUser!.financialState.netProfit,
