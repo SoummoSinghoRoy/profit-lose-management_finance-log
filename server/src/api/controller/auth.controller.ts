@@ -27,7 +27,7 @@ interface ApiResponse {
       netPayableDue: number;
       netReceivableDue: number;
       totalTransaction: number;
-    }
+    },
   }
   isAuthenticated?: boolean;
 }
@@ -141,7 +141,6 @@ const logInPostController = async (req: Request, res: Response): Promise<void> =
             res.json(response)
           }
           if (token) {
-            res.cookie('authorization', 'Bearer ' + token, { expires: new Date(Date.now() + 12 * 3600000) })
             const response: ApiResponse = {
               status: 200,
               message: 'Successfully loggedin',
@@ -158,7 +157,8 @@ const logInPostController = async (req: Request, res: Response): Promise<void> =
                 }
               }
             }
-            res.json(response)
+            res.cookie('authorization', 'Bearer ' + token, { expires: new Date(Date.now() + 12 * 3600000) });
+            res.json(response);
           } else {
             const response: ApiResponse = {
               status: 401,
