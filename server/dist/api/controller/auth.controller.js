@@ -135,7 +135,6 @@ const logInPostController = (req, res) => __awaiter(void 0, void 0, void 0, func
                         res.json(response);
                     }
                     if (token) {
-                        res.cookie('authorization', 'Bearer ' + token, { expires: new Date(Date.now() + 12 * 3600000) });
                         const response = {
                             status: 200,
                             message: 'Successfully loggedin',
@@ -152,6 +151,7 @@ const logInPostController = (req, res) => __awaiter(void 0, void 0, void 0, func
                                 }
                             }
                         };
+                        res.cookie('authorization', 'Bearer ' + token, { expires: new Date(Date.now() + 12 * 3600000) });
                         res.json(response);
                     }
                     else {
