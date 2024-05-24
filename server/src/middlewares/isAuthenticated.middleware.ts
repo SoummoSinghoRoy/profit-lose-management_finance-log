@@ -40,7 +40,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction): void 
     const response: AuthenticationResponse = {
       status: 401,
       message: 'UnAuthorized',
-      isAuthenticated: false
+      isAuthenticated: false,
     }
     res.json(response);
   }

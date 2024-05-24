@@ -30,6 +30,7 @@ interface ApiResponse {
     },
   }
   isAuthenticated?: boolean;
+  reqObj?: any 
 }
 
 const signUpPostController = async (req: Request, res: Response): Promise<void> => {
@@ -141,6 +142,7 @@ const logInPostController = async (req: Request, res: Response): Promise<void> =
             res.json(response)
           }
           if (token) {
+            res.cookie('authorization', 'Bearer ' + token, { expires: new Date(Date.now() + 12 * 3600000) });
             const response: ApiResponse = {
               status: 200,
               message: 'Successfully loggedin',
@@ -155,9 +157,8 @@ const logInPostController = async (req: Request, res: Response): Promise<void> =
                   netReceivableDue: validUser!.financialState.netReceivableDue,
                   totalTransaction: validUser!.financialState.totalTransaction
                 }
-              }
+              },
             }
-            res.cookie('authorization', 'Bearer ' + token, { expires: new Date(Date.now() + 12 * 3600000) });
             res.json(response);
           } else {
             const response: ApiResponse = {
@@ -182,7 +183,7 @@ const logInPostController = async (req: Request, res: Response): Promise<void> =
 }
 
 const logoutPostController = async (req: Request, res: Response): Promise<void> => {
-  try {
+  try {    
     res.clearCookie('authorization');
     const response: ApiResponse = {
       status: 200,

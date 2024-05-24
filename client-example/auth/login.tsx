@@ -1,32 +1,73 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
 
 import Alert from "@/components/alert";
 import { IError } from "./signup";
 import { loginPostRequest } from "@/utility/fetcher";
+import { UserContext } from "@/utility/UserContext";
 
 const initialState = {
   email: '',
   password: ''
 }
 
-const LogInPage = () => {
+const LogInPage = (props: any) => {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertStatus, setAlertStatus] = useState(0);
   const [loginState, setLogInState] = useState(initialState);
   const [error, setError] = useState<IError>({});
   const router = useRouter();
+  const {setUser, user} = useContext(UserContext);
 
   const changeHandler = (event: any) => {    
-    setLogInState({...loginState, [event.target.name]: event.target.value})
+    setLogInState({...loginState, [event.target.name]: event.target.value});
+  }
+
+  const submitHandlerLogin = (event: any) => {
+    event.preventDefault()
+    loginPostRequest(loginState).then((response) => {
+      console.log(response);
+      if(response.status !== 200) {
+        setAlertMessage(response.message);
+        setAlertStatus(response.status);
+        const apiError: IError = {
+          message: {
+            username: response.error?.message?.username || '',
+            email: response.error?.message?.email || '',
+            password: response.error?.message?.password || '',
+            confirmPassword: response.error?.message?.confirmPassword || '',
+            thumbnail: response.error?.message?.thumbnail || '',
+          },
+        };
+        setError(apiError);
+      } else {
+        const userData = {
+          id: 0,
+          username: response.data.username,
+          isAuthenticated: response.isAuthenticated,
+          financialState: {
+            netProfit: response.data.financialState.netProfit,
+            netLose: response.data.financialState.netLose,
+            netPayableDue: response.data.financialState.netPayableDue,
+            netReceivableDue: response.data.financialState.netReceivableDue,
+            totalTransaction: response.data.financialState.totalTransaction
+          }
+        }
+        props.addUser(userData);
+        router.push('/');
+      }
+    }).catch((error) => {
+      console.log(error);
+      setAlertMessage('Internal server error');
+      setAlertStatus(500)
+    })
   }
 
   const submitHandler = async (event: any) => {
     event.preventDefault()
     try {
       const response = await loginPostRequest(loginState);
-      console.log(response);
       if(response.status !== 200) {
         setAlertMessage(response.message);
         setAlertStatus(response.status);
@@ -47,6 +88,9 @@ const LogInPage = () => {
           password: ''
         });
         localStorage.setItem('authorized', response.isAuthenticated);
+        if (typeof window !== 'undefined') {
+          window.location.href = '/';
+        }
         router.push('/');
       }
     } catch (error) {
@@ -85,7 +129,7 @@ const LogInPage = () => {
               <div className="card-title border-bottom">
                 <h4 className="text-center py-1 text-primary-emphasis">Login Now</h4>
               </div>
-              <form onSubmit={submitHandler}>
+              <form onSubmit={submitHandlerLogin}>
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">Email</label>
                   <input 
