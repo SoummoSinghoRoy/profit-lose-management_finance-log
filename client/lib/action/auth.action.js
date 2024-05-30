@@ -3,14 +3,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { loginUser } from "../slice/auth.slice";
 import { loginPostRequest } from "@/app/utility/auth.fetcher";
 
-export const loginAction = createAsyncThunk('auth/login', async (loginState) => {
+export const loginAction = createAsyncThunk('auth/login', async (loginState, {dispatch}) => {
   try {
     const response = await loginPostRequest(loginState);
-    console.log(response);
     if(response.status !== 200) {
-      return loginUser(response);
+      dispatch(loginUser(response));
     } else {
-      return loginUser(response);
+      dispatch(loginUser(response));
     }
   } catch (error) {
     console.log(error);
@@ -18,6 +17,6 @@ export const loginAction = createAsyncThunk('auth/login', async (loginState) => 
       status: 500,
       message: `Internal server error`
     }
-    return loginUser(res);
+    dispatch(loginUser(res));
   }
 })

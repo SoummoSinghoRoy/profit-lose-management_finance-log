@@ -14,6 +14,7 @@ const authSlice = createSlice({
   reducers: {
     loginUser: (state, action) => {
       return {
+        ...state,
         user: {},
         error: action.payload.error || {},
         alertMessage: action.payload.message || '',
@@ -22,22 +23,6 @@ const authSlice = createSlice({
       }
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(loginAction.fulfilled, (state, action) => {
-      state.user = action.payload.payload.data || {},
-      state.error = action.payload.payload.error || {},
-      state.alertMessage = action.payload.payload.message || '',
-      state.alertStatus = action.payload.payload.status || 0,
-      state.isAuthenticated = action.payload.payload.isAuthenticated || false
-    })
-    // builder.addCase(loginAction.rejected, (state, action) => {
-    //   state.user = action.payload.payload.data || {},
-    //   state.error = action.payload.payload.error || {},
-    //   state.alertMessage = action.payload.payload.message || '',
-    //   state.alertStatus = action.payload.payload.status || 0,
-    //   state.isAuthenticated = action.payload.payload.isAuthenticated || false
-    // })
-  }
 })
 
 export const {loginUser} = authSlice.actions;

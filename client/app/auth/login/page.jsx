@@ -26,7 +26,7 @@ function Login() {
 
   const submitHandler = (event) => {
     event.preventDefault()
-    dispatch(loginAction(loginState, router));
+    dispatch(loginAction(loginState));
     setLogInState(initialState);
   }
 
