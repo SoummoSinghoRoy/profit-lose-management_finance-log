@@ -1,12 +1,19 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+
+import { clearAuthStateAction } from "@/lib/action/auth.action";
 
 function Alert(props) {
   const [showAlert, setShowAlert] = useState(true);
+  const dispatch = useDispatch();
 
   const dismissAlert = () => {
     setShowAlert(false)
-    localStorage.removeItem('signupMessage');
-    localStorage.removeItem('signupStatus');
+    const persistedData = sessionStorage.getItem('persist:root');
+    if(persistedData) {
+      sessionStorage.removeItem('persist:root')
+    }
+    dispatch(clearAuthStateAction());
   }
   return (
     showAlert && (
