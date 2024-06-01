@@ -28,7 +28,8 @@ interface ApiResponse {
       netReceivableDue: number;
       totalTransaction: number;
     },
-  }
+  },
+  token?: any;
   isAuthenticated?: boolean;
   reqObj?: any 
 }
@@ -142,11 +143,11 @@ const logInPostController = async (req: Request, res: Response): Promise<void> =
             res.json(response)
           }
           if (token) {
-            res.cookie('authorization', 'Bearer ' + token, { expires: new Date(Date.now() + 12 * 3600000), httpOnly: true });
             const response: ApiResponse = {
               status: 200,
               message: 'Successfully loggedin',
               isAuthenticated: true,
+              token: 'Bearer ' + token,
               data: {
                 id: validUser!._id,
                 username: validUser!.username,
@@ -184,7 +185,6 @@ const logInPostController = async (req: Request, res: Response): Promise<void> =
 
 const logoutPostController = async (req: Request, res: Response): Promise<void> => {
   try {    
-    res.clearCookie('authorization');
     const response: ApiResponse = {
       status: 200,
       message: 'Successfully loggedout',

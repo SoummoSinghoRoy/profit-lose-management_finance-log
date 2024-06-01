@@ -135,11 +135,11 @@ const logInPostController = (req, res) => __awaiter(void 0, void 0, void 0, func
                         res.json(response);
                     }
                     if (token) {
-                        res.cookie('authorization', 'Bearer ' + token, { expires: new Date(Date.now() + 12 * 3600000), httpOnly: true });
                         const response = {
                             status: 200,
                             message: 'Successfully loggedin',
                             isAuthenticated: true,
+                            token: 'Bearer ' + token,
                             data: {
                                 id: validUser._id,
                                 username: validUser.username,
@@ -179,7 +179,6 @@ const logInPostController = (req, res) => __awaiter(void 0, void 0, void 0, func
 exports.logInPostController = logInPostController;
 const logoutPostController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.clearCookie('authorization');
         const response = {
             status: 200,
             message: 'Successfully loggedout',
