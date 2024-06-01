@@ -4,7 +4,7 @@ exports.isNotAuthenticated = exports.isAuthenticated = void 0;
 const jwt_decode_1 = require("jwt-decode");
 const isAuthenticated = (req, res, next) => {
     const customReq = req;
-    const token = req.cookies.authorization;
+    const token = req.headers['authorization'];
     if (token) {
         const decoded = (0, jwt_decode_1.jwtDecode)(token);
         if (decoded) {
@@ -35,7 +35,7 @@ const isAuthenticated = (req, res, next) => {
 };
 exports.isAuthenticated = isAuthenticated;
 const isNotAuthenticated = (req, res, next) => {
-    const token = req.cookies.authorization;
+    const token = req.headers['authorization'];
     if (!token) {
         next();
     }

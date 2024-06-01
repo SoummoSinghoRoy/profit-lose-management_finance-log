@@ -18,7 +18,7 @@ interface CustomRequest extends Request {
 
 const isAuthenticated = (req: Request, res: Response, next: NextFunction): void => {
   const customReq = req as CustomRequest;
-  const token = req.cookies!.authorization;
+  const token = req.headers['authorization'];
   if (token) {
     const decoded = jwtDecode<JwtPayload>(token);
     if (decoded) {
@@ -47,7 +47,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction): void 
 }
 
 const isNotAuthenticated = (req: Request, res: Response, next: NextFunction): void => {
-  const token = req.cookies!.authorization;
+  const token = req.headers['authorization'];
   if (!token) {
     next()
   } else {
