@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { signupUser, loginUser, clearState } from "../slice/auth.slice";
-import { loginPostRequest, signupPostRequest } from "@/app/utility/auth.fetcher";
+import { signupUser, loginUser, logoutUser, clearState } from "../slice/auth.slice";
+import { loginPostRequest, signupPostRequest, logoutRequest } from "@/utility/auth.fetcher";
 
 export const signupAction = createAsyncThunk('auth/signup', async(signupState, {dispatch}) => {
   try {
@@ -36,6 +36,24 @@ export const loginAction = createAsyncThunk('auth/login', async (loginState, {di
       message: `Internal server error`
     }
     dispatch(loginUser(res));
+  }
+})
+
+export const logoutUserAction = createAsyncThunk('auth/logout', async(token, {dispatch}) => {
+  try {
+    const response = await logoutRequest(token);
+    if(response.status !== 200) {
+      dispatch(logoutUser());
+    } else {
+      dispatch(logoutUser());
+    }
+  } catch (error) {
+    console.log(error);
+    // const res = {
+    //   status: 500,
+    //   message: `Internal server error`
+    // }
+    dispatch(logoutUser());
   }
 })
 

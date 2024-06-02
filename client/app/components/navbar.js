@@ -1,10 +1,27 @@
 "use client"
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Link from 'next/link';
+import { useRouter } from "next/navigation";
 import StoreProvider from "../StoreProvider";
+import { logoutUserAction } from "@/lib/action/auth.action";
+import { persistor } from "@/lib/store";
 
 const Navbar = () => {
-  const {isAuthenticated} = useSelector(state => state.auth)
+  const {isAuthenticated} = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const logoutHandler = async () => {
+    const persistedData = sessionStorage.getItem('persist:auth');
+    const parsedData = JSON.parse(persistedData);
+    const token = parsedData.token ? parsedData.token : null;
+    if (token) {
+      dispatch(logoutUserAction(token));
+      await persistor.purge();
+      sessionStorage.removeItem('persist:auth');
+      router.push('/auth/login');
+    }
+  }
   return (
     <StoreProvider>
       <div className="container-fluid container-lg container-md">
@@ -25,7 +42,7 @@ const Navbar = () => {
                   <Link className="nav-link text-white" aria-current="page" href="#">Main</Link>
                   <Link className="nav-link text-white" href="#">Transactions</Link>
                   <Link className="nav-link text-white" href="#">Due</Link>
-                  <a className="btn btn-link text-white" role="button" aria-disabled="true">Logout</a>
+                  <button type="button" className="btn btn-link text-white" onClick={logoutHandler}>Logout</button>
                 </div>)
               }
             </div>

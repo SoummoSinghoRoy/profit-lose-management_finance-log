@@ -9,10 +9,6 @@ function Alert(props) {
 
   const dismissAlert = () => {
     setShowAlert(false)
-    const persistedData = sessionStorage.getItem('persist:root');
-    if(persistedData) {
-      sessionStorage.removeItem('persist:root')
-    }
     dispatch(clearAuthStateAction());
   }
   return (
