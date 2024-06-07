@@ -105,3 +105,17 @@ a {
     color-scheme: dark;
   }
 } */
+.navbar-dropdown-menu {
+  position: absolute !important;
+}
+.navbar-dropdown-item:active {
+  color: #212529 !important;
+  background-color: #f8f9fa !important;
+}
+
+@media (min-width: 992px) {
+  .navbar-dropdown-menu {
+    position: absolute;
+    right: -13px;
+  }
+}

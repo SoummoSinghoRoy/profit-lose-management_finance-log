@@ -48,17 +48,17 @@ function SignUp() {
       <Head>
         <title>Signup</title>
       </Head>
-      <div className="container-fluid container-lg container-md">
-        <div className="row d-flex justify-content-center">
-          <div className="col col-lg-6 col-md-6">
-            <div className="card bg-light-subtle border-light-subtle shadow-sm mx-lg-4 mx-md-4">
-              <div className="card-body">
-                {alertMessage ? <Alert status={alertStatus} message={alertMessage} /> : null}
-                <div className="card-title border-bottom">
-                  <h4 className="text-center py-1 text-primary-emphasis">Signup Now</h4>
-                </div>
-                <form onSubmit={submitHandle} encType="multipart/form-data">
-                  <div className="mb-3">
+      <div className="row d-flex justify-content-center">
+        <div className="col col-lg-6 col-md-6">
+          <div className="card bg-light-subtle border-light-subtle shadow-sm mx-lg-5 mx-md-5 pb-lg-3">
+            <div className="card-body">
+              {alertMessage ? <Alert status={alertStatus} message={alertMessage} /> : null}
+              <div className="card-title border-bottom">
+                <h4 className="text-center py-1 text-primary-emphasis">Signup Now</h4>
+              </div>
+              <form onSubmit={submitHandle} encType="multipart/form-data">
+                <div className="row g-3 mb-3">
+                  <div className="col-12 col-lg-6 col-md-6">
                     <label htmlFor="username" className="form-label">Username</label>
                     <input
                       type="text"
@@ -73,7 +73,7 @@ function SignUp() {
                       {error.message?.username && <p>{error.message.username}</p>}
                     </div>
                   </div>
-                  <div className="mb-3">
+                  <div className="col-12 col-lg-6 col-md-6">
                     <label htmlFor="email" className="form-label">Email</label>
                     <input
                       type="text"
@@ -88,7 +88,9 @@ function SignUp() {
                       {error.message?.email && error.message.email}
                     </div>
                   </div>
-                  <div className="mb-3">
+                </div>
+                <div className="row g-3 mb-3">
+                  <div className="col-12 col-lg-6 col-md-6">
                     <label htmlFor="password" className="form-label">Password</label>
                     <input
                       type="password"
@@ -103,7 +105,7 @@ function SignUp() {
                       {error.message?.password && error.message.password}
                     </div>
                   </div>
-                  <div className="mb-3">
+                  <div className="col-12 col-lg-6 col-md-6">
                     <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
                     <input
                       type="password"
@@ -117,7 +119,9 @@ function SignUp() {
                       {error.message?.confirmPassword && error.message.confirmPassword}
                     </div>
                   </div>
-                  <div className="mb-3">
+                </div>
+                <div className="row g-3 mb-3">
+                  <div className="col">
                     <label htmlFor="thumbnail" className="form-label">Choose Thumbnail</label>
                     <input
                       type="file"
@@ -130,12 +134,12 @@ function SignUp() {
                       {error.message?.thumbnail && error.message.thumbnail}
                     </div>
                   </div>
-                  <div className="d-flex justify-content-between">
-                    <button type="submit" className="btn btn-outline-success">signup</button>
-                    <p>Already have an account? <Link href="/auth/login">login</Link></p>
-                  </div>
-                </form>
-              </div>
+                </div>
+                <div className="mb-3">
+                  <button type="submit" className="btn btn-outline-success">signup</button>
+                </div>
+              </form>
+              <p className="mb-0">Already have an account? <Link href="/auth/login">login</Link></p>
             </div>
           </div>
         </div>

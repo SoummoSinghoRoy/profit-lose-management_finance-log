@@ -30,8 +30,8 @@ const authSlice = createSlice({
         user: action.payload.data || {},
         error: action.payload.error || {},
         token: action.payload.token || '',
-        alertMessage: action.payload.message || '',
-        alertStatus: action.payload.status || 0,
+        alertMessage: '',
+        alertStatus: 0,
         isAuthenticated: action.payload.isAuthenticated || false
       }
     },
