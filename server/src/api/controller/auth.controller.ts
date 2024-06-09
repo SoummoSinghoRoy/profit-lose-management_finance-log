@@ -31,7 +31,6 @@ interface ApiResponse {
   },
   token?: any;
   isAuthenticated?: boolean;
-  reqObj?: any 
 }
 
 const signUpPostController = async (req: Request, res: Response): Promise<void> => {
@@ -184,12 +183,14 @@ const logInPostController = async (req: Request, res: Response): Promise<void> =
 }
 
 const logoutPostController = async (req: Request, res: Response): Promise<void> => {
+  const customReq = req as CustomRequest;
   try {    
     const response: ApiResponse = {
       status: 200,
       message: 'Successfully loggedout',
       isAuthenticated: false
     }
+    customReq.user = null
     res.json(response)
   } catch (error) {
     console.log(error);
