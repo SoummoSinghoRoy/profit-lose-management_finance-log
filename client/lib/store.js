@@ -24,10 +24,11 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        ignoredActions: [PERSIST, REHYDRATE, PURGE, FLUSH, PAUSE, REGISTER],
         ignoredActionPaths: ['meta.arg', 'payload.timestamp'],
         ignoredPaths: ['items.dates'],
       },
     }),
 })
+
 export const persistor = persistStore(store);

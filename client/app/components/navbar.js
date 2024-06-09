@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 import StoreProvider from "../StoreProvider";
 import { logoutUserAction } from "@/lib/action/auth.action";
-import { persistor } from "@/lib/store";
+import { persistor } from '@/lib/store';
 
 const arvo = Arvo({ subsets: ['latin'], weight: "700" });
 
@@ -71,7 +71,7 @@ const Navbar = () => {
               <div className={`collapse navbar-collapse ${toggler ? 'show' : 'hidden'}`} id="navbarTogglerDemo01">
                 <ul className='navbar-nav ms-auto'>
                   <li className='nav-item'>
-                    <Link className="nav-link text-white" aria-current="page" href="#">Main</Link>
+                    <Link className="nav-link text-white" aria-current="page" href="/">Main</Link>
                   </li>
                   <li className='nav-item'>
                     <Link className="nav-link text-white" href="#">Transactions</Link>

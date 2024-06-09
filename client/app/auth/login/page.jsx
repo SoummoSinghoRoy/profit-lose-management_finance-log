@@ -59,7 +59,7 @@ function Login() {
                     value={loginState.email}
                     className="form-control form-control-sm"
                     onChange={changeHandler}
-                    autoComplete
+                    autoComplete="true"
                   />
                   <div className="invalid-feedback d-block">
                     {error.message?.email && error.message.email}
@@ -74,7 +74,7 @@ function Login() {
                     value={loginState.password}
                     className="form-control form-control-sm"
                     onChange={changeHandler}
-                    autoComplete
+                    autoComplete="true"
                   />
                   <div className="invalid-feedback d-block">
                     {error.message?.password && error.message.password}
