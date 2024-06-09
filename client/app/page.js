@@ -1,15 +1,16 @@
 "use client"
-import Image from "next/image";
-import styles from "./page.module.css";
 import ProtectedRoute from "./components/route-protection/ProtectedRoute";
+import FinanceStatus from "./components/financeStatus.card";
+import TransactionCard from "./components/transactionCard";
 
 export default function Home() {
   return (
     <ProtectedRoute>
+      <div className="row my-3">
+        <FinanceStatus />
+      </div>
       <div className="row">
-        <div className="col-12">
-          <h4>Main page</h4>
-        </div>
+        <TransactionCard />
       </div>
     </ProtectedRoute>
   );
