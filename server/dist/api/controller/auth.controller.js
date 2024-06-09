@@ -178,12 +178,14 @@ const logInPostController = (req, res) => __awaiter(void 0, void 0, void 0, func
 });
 exports.logInPostController = logInPostController;
 const logoutPostController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const customReq = req;
     try {
         const response = {
             status: 200,
             message: 'Successfully loggedout',
             isAuthenticated: false
         };
+        customReq.user = null;
         res.json(response);
     }
     catch (error) {
