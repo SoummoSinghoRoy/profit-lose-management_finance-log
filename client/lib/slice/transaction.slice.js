@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { logoutUserAction } from "../action/auth.action";
+
 const initialState= {
   allTransaction: [],
   singleTransaction: {},
@@ -20,6 +22,11 @@ const transactionSlice = createSlice({
         alertStatus: action.payload.status
       }
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(logoutUserAction.fulfilled, () => {
+      return initialState;
+    })
   }
 })
 
