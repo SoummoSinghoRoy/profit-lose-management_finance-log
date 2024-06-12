@@ -418,9 +418,17 @@ const transactionDeleteController = async (req: Request, res: Response): Promise
           }}
         )
       }
+      const userState = await User.findById(customReq.user!.id);
       const response: ApiResponse = {
         status: 200,
         message: 'successfully deleted',
+        financialState: {
+          netProfit: userState?.financialState.netProfit || 0,
+          netLose: userState?.financialState.netLose || 0,
+          netPayableDue: userState?.financialState.netPayableDue || 0,
+          netReceivableDue: userState?.financialState.netReceivableDue || 0,
+          totalTransaction: userState?.financialState.totalTransaction || 0
+        }
       }
       res.json(response)
     } else {
