@@ -25,6 +25,13 @@ interface ApiResponse {
     date: string;
     description: string;
   } | object[];
+  financialState?: {
+    netProfit: number;
+    netLose: number;
+    netPayableDue: number;
+    netReceivableDue: number;
+    totalTransaction: number;
+  }
 }
 
 const transactionCreatePostController = async (req: Request, res: Response): Promise<void> => {
@@ -86,6 +93,7 @@ const transactionCreatePostController = async (req: Request, res: Response): Pro
           }}
         );
       }
+      const userState = await User.findById(customReq.user!.id);
       const response: ApiResponse = {
         status: 200,
         message: 'Transaction successfully created',
@@ -101,6 +109,14 @@ const transactionCreatePostController = async (req: Request, res: Response): Pro
           },
           date: transaction.date,
           description: transaction.description
+        }
+        ,
+        financialState: {
+          netProfit: userState?.financialState.netProfit || 0,
+          netLose: userState?.financialState.netLose || 0,
+          netPayableDue: userState?.financialState.netPayableDue || 0,
+          netReceivableDue: userState?.financialState.netReceivableDue || 0,
+          totalTransaction: userState?.financialState.totalTransaction || 0
         }
       }
       res.json(response)
@@ -179,6 +195,7 @@ const transactionEditPutController = async (req: Request, res: Response): Promis
             }}
           )
         }
+        const userState = await User.findById(customReq.user!.id);
         const response: ApiResponse = {
           status: 200,
           message: 'Transaction successfully updated',
@@ -194,6 +211,13 @@ const transactionEditPutController = async (req: Request, res: Response): Promis
             },
             date: updatedTransaction!.date,
             description: updatedTransaction!.description
+          },
+          financialState: {
+            netProfit: userState?.financialState.netProfit || 0,
+            netLose: userState?.financialState.netLose || 0,
+            netPayableDue: userState?.financialState.netPayableDue || 0,
+            netReceivableDue: userState?.financialState.netReceivableDue || 0,
+            totalTransaction: userState?.financialState.totalTransaction || 0
           }
         }
         res.json(response)
@@ -277,6 +301,7 @@ const dueTransactionUpdateController = async (req: Request, res: Response): Prom
             }}
           )
         }
+        const userState = await User.findById(customReq.user!.id);
         const response: ApiResponse = {
           status: 200,
           message: 'Due Transaction successfully updated',
@@ -292,6 +317,13 @@ const dueTransactionUpdateController = async (req: Request, res: Response): Prom
             },
             date: dueUpdatedTransaction!.date,
             description: dueUpdatedTransaction!.description
+          },
+          financialState: {
+            netProfit: userState?.financialState.netProfit || 0,
+            netLose: userState?.financialState.netLose || 0,
+            netPayableDue: userState?.financialState.netPayableDue || 0,
+            netReceivableDue: userState?.financialState.netReceivableDue || 0,
+            totalTransaction: userState?.financialState.totalTransaction || 0
           }
         }
         res.json(response)
@@ -318,11 +350,19 @@ const allTransactionsGetController = async (req: Request, res: Response): Promis
   const customReq = req as CustomRequest;
   try {
     const transactions = await Transaction.find({user: customReq.user!.id});
+    const userState = await User.findById(customReq.user!.id);
     if (transactions) {
       const response: ApiResponse = {
         status: 200,
         message: 'successfully retrieved data',
-        data: transactions
+        data: transactions,
+        financialState: {
+          netProfit: userState?.financialState.netProfit || 0,
+          netLose: userState?.financialState.netLose || 0,
+          netPayableDue: userState?.financialState.netPayableDue || 0,
+          netReceivableDue: userState?.financialState.netReceivableDue || 0,
+          totalTransaction: userState?.financialState.totalTransaction || 0
+        }
       }
       res.json(response)
     } else {

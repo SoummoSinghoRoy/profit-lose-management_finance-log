@@ -71,6 +71,7 @@ const transactionCreatePostController = (req, res) => __awaiter(void 0, void 0, 
                         }
                     } });
             }
+            const userState = yield User_model_1.default.findById(customReq.user.id);
             const response = {
                 status: 200,
                 message: 'Transaction successfully created',
@@ -86,6 +87,13 @@ const transactionCreatePostController = (req, res) => __awaiter(void 0, void 0, 
                     },
                     date: transaction.date,
                     description: transaction.description
+                },
+                financialState: {
+                    netProfit: (userState === null || userState === void 0 ? void 0 : userState.financialState.netProfit) || 0,
+                    netLose: (userState === null || userState === void 0 ? void 0 : userState.financialState.netLose) || 0,
+                    netPayableDue: (userState === null || userState === void 0 ? void 0 : userState.financialState.netPayableDue) || 0,
+                    netReceivableDue: (userState === null || userState === void 0 ? void 0 : userState.financialState.netReceivableDue) || 0,
+                    totalTransaction: (userState === null || userState === void 0 ? void 0 : userState.financialState.totalTransaction) || 0
                 }
             };
             res.json(response);
@@ -156,6 +164,7 @@ const transactionEditPutController = (req, res) => __awaiter(void 0, void 0, voi
                             }
                         } });
                 }
+                const userState = yield User_model_1.default.findById(customReq.user.id);
                 const response = {
                     status: 200,
                     message: 'Transaction successfully updated',
@@ -171,6 +180,13 @@ const transactionEditPutController = (req, res) => __awaiter(void 0, void 0, voi
                         },
                         date: updatedTransaction.date,
                         description: updatedTransaction.description
+                    },
+                    financialState: {
+                        netProfit: (userState === null || userState === void 0 ? void 0 : userState.financialState.netProfit) || 0,
+                        netLose: (userState === null || userState === void 0 ? void 0 : userState.financialState.netLose) || 0,
+                        netPayableDue: (userState === null || userState === void 0 ? void 0 : userState.financialState.netPayableDue) || 0,
+                        netReceivableDue: (userState === null || userState === void 0 ? void 0 : userState.financialState.netReceivableDue) || 0,
+                        totalTransaction: (userState === null || userState === void 0 ? void 0 : userState.financialState.totalTransaction) || 0
                     }
                 };
                 res.json(response);
@@ -248,6 +264,7 @@ const dueTransactionUpdateController = (req, res) => __awaiter(void 0, void 0, v
                             }
                         } });
                 }
+                const userState = yield User_model_1.default.findById(customReq.user.id);
                 const response = {
                     status: 200,
                     message: 'Due Transaction successfully updated',
@@ -263,6 +280,13 @@ const dueTransactionUpdateController = (req, res) => __awaiter(void 0, void 0, v
                         },
                         date: dueUpdatedTransaction.date,
                         description: dueUpdatedTransaction.description
+                    },
+                    financialState: {
+                        netProfit: (userState === null || userState === void 0 ? void 0 : userState.financialState.netProfit) || 0,
+                        netLose: (userState === null || userState === void 0 ? void 0 : userState.financialState.netLose) || 0,
+                        netPayableDue: (userState === null || userState === void 0 ? void 0 : userState.financialState.netPayableDue) || 0,
+                        netReceivableDue: (userState === null || userState === void 0 ? void 0 : userState.financialState.netReceivableDue) || 0,
+                        totalTransaction: (userState === null || userState === void 0 ? void 0 : userState.financialState.totalTransaction) || 0
                     }
                 };
                 res.json(response);
@@ -291,11 +315,19 @@ const allTransactionsGetController = (req, res) => __awaiter(void 0, void 0, voi
     const customReq = req;
     try {
         const transactions = yield Transaction_model_1.default.find({ user: customReq.user.id });
+        const userState = yield User_model_1.default.findById(customReq.user.id);
         if (transactions) {
             const response = {
                 status: 200,
                 message: 'successfully retrieved data',
-                data: transactions
+                data: transactions,
+                financialState: {
+                    netProfit: (userState === null || userState === void 0 ? void 0 : userState.financialState.netProfit) || 0,
+                    netLose: (userState === null || userState === void 0 ? void 0 : userState.financialState.netLose) || 0,
+                    netPayableDue: (userState === null || userState === void 0 ? void 0 : userState.financialState.netPayableDue) || 0,
+                    netReceivableDue: (userState === null || userState === void 0 ? void 0 : userState.financialState.netReceivableDue) || 0,
+                    totalTransaction: (userState === null || userState === void 0 ? void 0 : userState.financialState.totalTransaction) || 0
+                }
             };
             res.json(response);
         }
