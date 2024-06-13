@@ -380,9 +380,17 @@ const transactionDeleteController = (req, res) => __awaiter(void 0, void 0, void
                         }
                     } });
             }
+            const userState = yield User_model_1.default.findById(customReq.user.id);
             const response = {
                 status: 200,
                 message: 'successfully deleted',
+                financialState: {
+                    netProfit: (userState === null || userState === void 0 ? void 0 : userState.financialState.netProfit) || 0,
+                    netLose: (userState === null || userState === void 0 ? void 0 : userState.financialState.netLose) || 0,
+                    netPayableDue: (userState === null || userState === void 0 ? void 0 : userState.financialState.netPayableDue) || 0,
+                    netReceivableDue: (userState === null || userState === void 0 ? void 0 : userState.financialState.netReceivableDue) || 0,
+                    totalTransaction: (userState === null || userState === void 0 ? void 0 : userState.financialState.totalTransaction) || 0
+                }
             };
             res.json(response);
         }
