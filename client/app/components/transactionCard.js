@@ -2,25 +2,27 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { allTransactionsFetchAction } from "@/lib/action/transaction.action";
+import TransactionModal from "./transactionModal";
 
 export default function TransactionCard({ transactionLimit }) {
   const dispatch = useDispatch();
-  const { allTransaction } = useSelector((state) => state.transaction);
+  const { allTransaction, singleTransaction } = useSelector((state) => state.transaction);
   const transactionsToDisplay = transactionLimit ? allTransaction.slice(0, transactionLimit) : allTransaction;
 
   useEffect(() => {
     dispatch(allTransactionsFetchAction());
-  }, [dispatch]);
+  }, [dispatch, singleTransaction]);
   return (
     <>
       {
+        transactionsToDisplay.length !== 0 ?
         transactionsToDisplay.map((transaction, index) => {
           return (
             <div className="col-12 col-lg-4 col-md-4 mb-3 mb-lg-0 mb-md-0" key={index}>
               <div className="card shadow-sm bg-light mt-3">
                 <div className="card-header d-flex flex-row">
                   <p className="mb-0"><strong>Date:&nbsp;</strong>{transaction.date}</p>
-                  <p className="ms-auto mb-0"><strong>Type:&nbsp;</strong>{transaction.transactionType}</p>
+                  <p className="ms-auto mb-0"><strong>Type:&nbsp;</strong><span className={transaction.transactionType === "income" ? "text-success" : "text-danger"}>{transaction.transactionType}</span></p>
                 </div>
                 <div className="card-body">
                   <p className="mb-2"><strong>From:&nbsp;</strong>{transaction.to_from}</p>
@@ -37,14 +39,19 @@ export default function TransactionCard({ transactionLimit }) {
                 </div>
                 <div className="card-footer">
                   <div className="d-grid gap-2 d-flex justify-content-end">
-                    <button className="btn btn-warning me-md-2 px-4" type="button">Edit</button>
+                    <TransactionModal transactionId={transaction._id} />
                     <button className="btn btn-danger" type="button">Delete</button>
                   </div>
                 </div>
               </div>
             </div>
           )
-        })
+        }) : 
+        <div className="col-12">
+          <h4 className="text-secondar text-center fw-semibold">
+            Data not found.......
+          </h4>
+        </div>
       }
     </>
   )

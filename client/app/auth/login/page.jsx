@@ -34,7 +34,7 @@ function Login() {
     if (isAuthenticated) {
       router.push('/');
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, router]);
 
   return (
     <UnProtectedRoute>

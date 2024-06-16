@@ -41,7 +41,7 @@ function SignUp() {
     if (alertStatus === 200) {
       router.push('/auth/login')
     }
-  }, [alertStatus]);
+  }, [alertStatus, router]);
 
   return (
     <UnProtectedRoute>

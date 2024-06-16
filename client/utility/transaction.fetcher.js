@@ -25,3 +25,62 @@ export async function fetchAllTransactionRequest(token) {
     return res;
   }
 }
+
+export async function createTransactionPostRequest(transactionRequestData, token) {
+  if(token) {
+    try {
+      const {data} = await axios.post('http://localhost:7272/api/transaction/add',
+        transactionRequestData,
+        {
+          headers: {
+            'authorization': token
+          }
+        }
+      )
+      return data;
+    } catch (error) {
+      console.log(error);
+      const res = {
+        status: 500,
+        message: `Internal server error`
+      }
+      return res;
+    }
+  } else {
+    const res = {
+      status: 401,
+      message: `UnAuthorized`
+    }
+    return res;
+  }
+}
+
+export async function editTransactionPutRequest(transactionid, transactionEditState, token) {
+  console.log(transactionid);
+  if(token) {
+    try {
+      const {data} = await axios.put(`http://localhost:7272/api/transaction/edit/${transactionid}`,
+        transactionEditState,
+        {
+          headers: {
+            'authorization': token
+          }
+        }
+      )
+      return data;
+    } catch (error) {
+      console.log(error);
+      const res = {
+        status: 500,
+        message: `Internal server error`
+      }
+      return res;
+    }
+  } else {
+    const res = {
+      status: 401,
+      message: `UnAuthorized`
+    }
+    return res;
+  }
+}

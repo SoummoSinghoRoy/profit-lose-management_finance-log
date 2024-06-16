@@ -7,7 +7,8 @@ const initialState= {
   token: '',
   alertMessage: '',
   alertStatus: 0,
-  isAuthenticated: false
+  isAuthenticated: false,
+  needsClearState: false
 };
 const authSlice = createSlice({
   name: 'auth',
@@ -19,7 +20,8 @@ const authSlice = createSlice({
         user: action.payload.data || {},
         error: action.payload.error || {},
         alertMessage: action.payload.message || '',
-        alertStatus: action.payload.status || 0, 
+        alertStatus: action.payload.status || 0,
+        needsClearState: action.payload.message ? true : false
       }
     },
     loginUser: (state, action) => {
@@ -29,7 +31,8 @@ const authSlice = createSlice({
         token: action.payload.token || '',
         alertMessage: !action.payload.token ? action.payload.message : '',
         alertStatus: !action.payload.token ? action.payload.status : 0,
-        isAuthenticated: action.payload.isAuthenticated || false
+        isAuthenticated: action.payload.isAuthenticated || false,
+        needsClearState: !action.payload.isAuthenticated ? true : false
       }
     },
     changeUserPassword: (state, action) => {
@@ -37,7 +40,8 @@ const authSlice = createSlice({
         ...state,
         error: action.payload.error || {},
         alertMessage: action.payload.message || '',
-        alertStatus: action.payload.status || 0
+        alertStatus: action.payload.status || 0,
+        needsClearState: action.payload.message ? true : false
       }
     },
     logoutUser: (state, action) => {
@@ -48,7 +52,8 @@ const authSlice = createSlice({
         ...state,
         error: state.error && {},
         alertMessage: state.alertMessage && '',
-        alertStatus: state.alertStatus && 0
+        alertStatus: state.alertStatus && 0,
+        needsClearState: false
       }
     }
   },

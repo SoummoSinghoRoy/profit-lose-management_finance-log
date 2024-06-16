@@ -1,15 +1,23 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { clearAuthStateAction } from "@/lib/action/auth.action";
+import { clearTransactionStateAction } from "@/lib/action/transaction.action";
 
 function Alert(props) {
   const [showAlert, setShowAlert] = useState(true);
+  const authState = useSelector((state) => state.auth);
+  const transactionState = useSelector((state) => state.transaction);
   const dispatch = useDispatch();
 
   const dismissAlert = () => {
     setShowAlert(false)
-    dispatch(clearAuthStateAction());
+    if(authState.needsClearState) {
+      dispatch(clearAuthStateAction());
+    }
+    if(transactionState.needsClearState) {
+      dispatch(clearTransactionStateAction());
+    }
   }
   return (
     showAlert && (
