@@ -59,7 +59,7 @@ const transactionSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(editTransaction.fulfilled, () => {
+    builder.addCase(logoutUserAction.fulfilled, () => {
       return initialState;
     })
   }
