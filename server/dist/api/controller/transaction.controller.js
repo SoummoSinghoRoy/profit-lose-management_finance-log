@@ -19,8 +19,7 @@ const User_model_1 = __importDefault(require("../../model/User.model"));
 const updateDueTransaction_validation_1 = __importDefault(require("../../validation/updateDueTransaction.validation"));
 const transactionCreatePostController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const customReq = req;
-    const { transaction_type, to_from, total, paid, received, due, date, description } = req.body;
-    const transactionType = transaction_type.toLowerCase();
+    const { transactionType, to_from, total, paid, received, due, date, description } = req.body;
     const validation = (0, transaction_validation_1.default)({ transactionType, to_from, total, paid, received, due, date, description });
     if (!validation.isValid) {
         const validationresult = {
@@ -112,8 +111,7 @@ const transactionCreatePostController = (req, res) => __awaiter(void 0, void 0, 
 exports.transactionCreatePostController = transactionCreatePostController;
 const transactionEditPutController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const customReq = req;
-    const { transaction_type, to_from, total, paid, received, due, date, description } = req.body;
-    const transactionType = transaction_type.toLowerCase();
+    const { transactionType, to_from, total, paid, received, due, date, description } = req.body;
     const { transactionId } = req.params;
     const validTransaction = yield Transaction_model_1.default.findById(transactionId);
     if (validTransaction) {

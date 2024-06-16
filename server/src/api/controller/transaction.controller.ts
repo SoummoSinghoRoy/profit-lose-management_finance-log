@@ -36,8 +36,7 @@ interface ApiResponse {
 
 const transactionCreatePostController = async (req: Request, res: Response): Promise<void> => {
   const customReq = req as CustomRequest;
-  const { transaction_type, to_from, total, paid, received, due, date, description } = req.body;
-  const transactionType = transaction_type.toLowerCase();
+  const { transactionType, to_from, total, paid, received, due, date, description } = req.body;
 
   const validation = transactionValidation({transactionType, to_from, total, paid, received, due, date, description});
   if(!validation.isValid) {
@@ -134,8 +133,7 @@ const transactionCreatePostController = async (req: Request, res: Response): Pro
 
 const transactionEditPutController = async (req: Request, res: Response): Promise<void> => {
   const customReq = req as CustomRequest;
-  const { transaction_type, to_from, total, paid, received, due, date, description } = req.body;
-  const transactionType = transaction_type.toLowerCase();
+  const { transactionType, to_from, total, paid, received, due, date, description } = req.body;
   const { transactionId } = req.params;
 
   const validTransaction = await Transaction.findById(transactionId);
