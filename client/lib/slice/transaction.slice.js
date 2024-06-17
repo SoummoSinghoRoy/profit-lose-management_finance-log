@@ -35,12 +35,10 @@ const transactionSlice = createSlice({
       }
     },
     editTransaction: (state, action) => {
-      const updatedTransaction = action.payload.data;
+      const updatedTransaction = action.payload.data || {};
       const index = state.allTransaction.findIndex(transaction => transaction._id === updatedTransaction._id);
-      if (index !== -1) {
-        state.allTransaction[index] = updatedTransaction;
-      }
-      state.singleTransaction = updatedTransaction || {};
+      state.allTransaction.splice(index, 1, updatedTransaction);
+      state.singleTransaction = action.payload.data || {};
       state.error = action.payload.error || {};
       state.alertMessage = action.payload.message || '';
       state.alertStatus = action.payload.status || 0;

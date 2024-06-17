@@ -14,16 +14,17 @@ const initialState = {
   description: ''
 }
 
-export default function TransactionEditForm({ modalButtonHandler, transactionid }) {
+export default function TransactionEditForm({ modalButtonHandler, transactionId }) {
   const [currentTransactionState, setCurrentTransactionState] = useState(initialState);
+  const [transactionid, setTransactionid] = useState('');
   const [currentDue, setCurrentDue] = useState('');
   const { error, allTransaction} = useSelector((state) => state.transaction);
-  const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(transactionid) {
-      const filteredTransaction = allTransaction.find((transaction) => transaction._id === transactionid);
+    if(transactionId) {
+      const filteredTransaction = allTransaction.find((transaction) => transaction._id === transactionId);
+      setTransactionid(filteredTransaction._id);
       setCurrentTransactionState({
         transactionType: filteredTransaction.transactionType,
         to_from: filteredTransaction.to_from,

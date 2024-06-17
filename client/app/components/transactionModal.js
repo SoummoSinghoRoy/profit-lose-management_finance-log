@@ -56,7 +56,7 @@ export default function TransactionModal({transactionAction, transactionId}) {
             {
               transactionAction === "create" ? 
               <TransactionMakingForm modalButtonHandler={modalButtonClickHandler} /> :
-              <TransactionEditForm modalButtonHandler={modalButtonClickHandler} transactionid={transactionId} />
+              <TransactionEditForm modalButtonHandler={modalButtonClickHandler} transactionId={transactionId}/>
             }
           </div>
         </div>

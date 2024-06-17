@@ -36,13 +36,10 @@ export const createTransactionAction = createAsyncThunk('transaction/create', as
 })
 
 export const editTransactionAction = createAsyncThunk('transaction/edit', async({transactionid, transactionEditState}, {dispatch, getState}) => {
-  console.log(transactionEditState);
-  console.log(transactionid);
   try {
     const state = getState();
     const token = state.auth.token;
     const response = await editTransactionPutRequest(transactionid, transactionEditState, token);
-    console.log(response);
     dispatch(editTransaction(response));
   } catch (error) {
     console.log(error);

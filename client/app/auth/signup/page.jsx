@@ -36,6 +36,8 @@ function SignUp() {
     event.preventDefault()
     const signupRequestBody = { ...signupState, thumbnail: file };
     dispatch(signupAction(signupRequestBody));
+    setSignupState(initialState);
+    document.getElementById('thumbnail').value = '';
   }
   useEffect(() => {
     if (alertStatus === 200) {

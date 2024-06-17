@@ -56,7 +56,6 @@ export async function createTransactionPostRequest(transactionRequestData, token
 }
 
 export async function editTransactionPutRequest(transactionid, transactionEditState, token) {
-  console.log(transactionid);
   if(token) {
     try {
       const {data} = await axios.put(`http://localhost:7272/api/transaction/edit/${transactionid}`,
