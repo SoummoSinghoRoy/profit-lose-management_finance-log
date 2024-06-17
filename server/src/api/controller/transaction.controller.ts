@@ -71,7 +71,7 @@ const transactionCreatePostController = async (req: Request, res: Response): Pro
           {$set: {
             "financialState": {
               "netProfit": user!.financialState.netProfit + transaction.amount.received,
-              "netLose": user!.financialState.netLose - transaction.amount.received,
+              "netLose": user!.financialState.netLose,
               "netPayableDue": user!.financialState.netPayableDue,
               "netReceivableDue": user!.financialState.netReceivableDue + transaction.amount.due,
               "totalTransaction": user!.financialState.totalTransaction + transaction.amount.total
@@ -83,7 +83,7 @@ const transactionCreatePostController = async (req: Request, res: Response): Pro
           {_id: user!._id},
           {$set: {
             "financialState": {
-              "netProfit": user!.financialState.netProfit - transaction.amount.paid,
+              "netProfit": user!.financialState.netProfit,
               "netLose": user!.financialState.netLose + transaction.amount.paid,
               "netPayableDue": user!.financialState.netPayableDue + transaction.amount.due,
               "netReceivableDue": user!.financialState.netReceivableDue,
@@ -172,7 +172,7 @@ const transactionEditPutController = async (req: Request, res: Response): Promis
             {$set: {
               "financialState": {
                 "netProfit": (user!.financialState.netProfit - validTransaction!.amount.received) + updatedTransaction!.amount.received,
-                "netLose": (user!.financialState.netLose + validTransaction!.amount.received) - updatedTransaction!.amount.received,
+                "netLose": user!.financialState.netLose,
                 "netPayableDue": user!.financialState.netPayableDue,
                 "netReceivableDue": (user!.financialState.netReceivableDue - validTransaction.amount.due) + updatedTransaction!.amount.due,
                 "totalTransaction": (user!.financialState.totalTransaction - validTransaction.amount.total) + updatedTransaction!.amount.total
@@ -184,7 +184,7 @@ const transactionEditPutController = async (req: Request, res: Response): Promis
             {_id: user!._id},
             {$set: {
               "financialState": {
-                "netProfit": (user!.financialState.netProfit + validTransaction!.amount.paid) - updatedTransaction!.amount.paid,
+                "netProfit": user!.financialState.netProfit,
                 "netLose": (user!.financialState.netLose - validTransaction!.amount.paid) + updatedTransaction!.amount.paid,
                 "netPayableDue": (user!.financialState.netPayableDue - validTransaction.amount.due) + updatedTransaction!.amount.due,
                 "netReceivableDue": user!.financialState.netReceivableDue,
@@ -278,7 +278,7 @@ const dueTransactionUpdateController = async (req: Request, res: Response): Prom
             {$set: {
               "financialState": {
                 "netProfit": user!.financialState.netProfit + received,
-                "netLose": user!.financialState.netLose - received,
+                "netLose": user!.financialState.netLose,
                 "netPayableDue": user!.financialState.netPayableDue,
                 "netReceivableDue": user!.financialState.netReceivableDue - received,
                 "totalTransaction": user!.financialState.totalTransaction
@@ -290,7 +290,7 @@ const dueTransactionUpdateController = async (req: Request, res: Response): Prom
             {_id: user!._id},
             {$set: {
               "financialState": {
-                "netProfit": user!.financialState.netProfit - paid,
+                "netProfit": user!.financialState.netProfit,
                 "netLose": user!.financialState.netLose + paid,
                 "netPayableDue": user!.financialState.netPayableDue - paid,
                 "netReceivableDue": user!.financialState.netReceivableDue,
