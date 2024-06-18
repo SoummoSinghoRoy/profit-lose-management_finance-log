@@ -108,8 +108,7 @@ const transactionCreatePostController = async (req: Request, res: Response): Pro
           },
           date: transaction.date,
           description: transaction.description
-        }
-        ,
+        },
         financialState: {
           netProfit: userState?.financialState.netProfit || 0,
           netLose: userState?.financialState.netLose || 0,
@@ -395,7 +394,7 @@ const transactionDeleteController = async (req: Request, res: Response): Promise
           {$set: {
             "financialState": {
               "netProfit": user!.financialState.netProfit - validTransaction.amount.received,
-              "netLose": user!.financialState.netLose + validTransaction.amount.received,
+              "netLose": user!.financialState.netLose,
               "netPayableDue": user!.financialState.netPayableDue,
               "netReceivableDue": user!.financialState.netReceivableDue - validTransaction.amount.due,
               "totalTransaction": user!.financialState.totalTransaction - validTransaction.amount.total
@@ -407,7 +406,7 @@ const transactionDeleteController = async (req: Request, res: Response): Promise
           {_id: user!._id},
           {$set: {
             "financialState": {
-              "netProfit": user!.financialState.netProfit + validTransaction.amount.paid,
+              "netProfit": user!.financialState.netProfit,
               "netLose": user!.financialState.netLose - validTransaction.amount.paid,
               "netPayableDue": user!.financialState.netPayableDue - validTransaction.amount.due,
               "netReceivableDue": user!.financialState.netReceivableDue,
@@ -420,6 +419,19 @@ const transactionDeleteController = async (req: Request, res: Response): Promise
       const response: ApiResponse = {
         status: 200,
         message: 'successfully deleted',
+        data: {
+          id: validTransaction._id,
+          transactionType: validTransaction.transactionType,
+          to_from: validTransaction.to_from,
+          amount: {
+            total: validTransaction.amount.total,
+            paid: validTransaction.amount.paid,
+            received: validTransaction.amount.received,
+            due: validTransaction.amount.due
+          },
+          date: validTransaction.date,
+          description: validTransaction.description
+        },
         financialState: {
           netProfit: userState?.financialState.netProfit || 0,
           netLose: userState?.financialState.netLose || 0,

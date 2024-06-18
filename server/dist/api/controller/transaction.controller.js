@@ -360,7 +360,7 @@ const transactionDeleteController = (req, res) => __awaiter(void 0, void 0, void
                 yield User_model_1.default.findOneAndUpdate({ _id: user._id }, { $set: {
                         "financialState": {
                             "netProfit": user.financialState.netProfit - validTransaction.amount.received,
-                            "netLose": user.financialState.netLose + validTransaction.amount.received,
+                            "netLose": user.financialState.netLose,
                             "netPayableDue": user.financialState.netPayableDue,
                             "netReceivableDue": user.financialState.netReceivableDue - validTransaction.amount.due,
                             "totalTransaction": user.financialState.totalTransaction - validTransaction.amount.total
@@ -370,7 +370,7 @@ const transactionDeleteController = (req, res) => __awaiter(void 0, void 0, void
             else if (validTransaction.transactionType === 'expense') {
                 yield User_model_1.default.findOneAndUpdate({ _id: user._id }, { $set: {
                         "financialState": {
-                            "netProfit": user.financialState.netProfit + validTransaction.amount.paid,
+                            "netProfit": user.financialState.netProfit,
                             "netLose": user.financialState.netLose - validTransaction.amount.paid,
                             "netPayableDue": user.financialState.netPayableDue - validTransaction.amount.due,
                             "netReceivableDue": user.financialState.netReceivableDue,
@@ -382,6 +382,19 @@ const transactionDeleteController = (req, res) => __awaiter(void 0, void 0, void
             const response = {
                 status: 200,
                 message: 'successfully deleted',
+                data: {
+                    id: validTransaction._id,
+                    transactionType: validTransaction.transactionType,
+                    to_from: validTransaction.to_from,
+                    amount: {
+                        total: validTransaction.amount.total,
+                        paid: validTransaction.amount.paid,
+                        received: validTransaction.amount.received,
+                        due: validTransaction.amount.due
+                    },
+                    date: validTransaction.date,
+                    description: validTransaction.description
+                },
                 financialState: {
                     netProfit: (userState === null || userState === void 0 ? void 0 : userState.financialState.netProfit) || 0,
                     netLose: (userState === null || userState === void 0 ? void 0 : userState.financialState.netLose) || 0,
