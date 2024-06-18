@@ -53,6 +53,15 @@ const transactionSchema = new mongoose_1.Schema({
 }, {
     timestamps: true
 });
+transactionSchema.index({
+    transactionType: 'text',
+    to_from: 'text'
+}, {
+    weights: {
+        to_from: 2,
+        transactionType: 1
+    }
+});
 const Transaction = (0, mongoose_1.model)('Transaction', transactionSchema);
 exports.default = Transaction;
 //# sourceMappingURL=Transaction.model.js.map

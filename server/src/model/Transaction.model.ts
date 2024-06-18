@@ -66,6 +66,16 @@ const transactionSchema = new Schema<ITransaction> ({
   timestamps: true
 })
 
+transactionSchema.index({
+  transactionType: 'text',
+  to_from: 'text'
+}, {
+  weights: {
+    to_from: 2,
+    transactionType: 1
+  }
+})
+
 const Transaction = model<ITransaction>('Transaction', transactionSchema);
 
 export default Transaction;

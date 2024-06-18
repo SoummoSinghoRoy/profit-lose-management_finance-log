@@ -5,7 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const auth_route_1 = __importDefault(require("./auth.route"));
 const transaction_route_1 = __importDefault(require("./transaction.route"));
+const search_route_1 = __importDefault(require("./search.route"));
 const routes = [
+    {
+        path: '/api/search',
+        handler: search_route_1.default
+    },
     {
         path: '/api/transaction',
         handler: transaction_route_1.default

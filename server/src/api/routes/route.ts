@@ -2,6 +2,7 @@ import { Router, Request, Response, Application } from "express";
 
 import authRoute from './auth.route';
 import transactionRoute from './transaction.route';
+import searchRoute from './search.route';
 
 interface IRoute {
   path: string;
@@ -9,6 +10,10 @@ interface IRoute {
 }
 
 const routes: IRoute[] = [
+  {
+    path: '/api/search',
+    handler: searchRoute
+  },
   {
     path: '/api/transaction',
     handler: transactionRoute
