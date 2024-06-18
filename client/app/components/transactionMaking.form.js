@@ -45,7 +45,6 @@ export default function TransactionMakingForm({ modalButtonHandler}) {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    console.log(transactionMakingState);
     dispatch(createTransactionAction({...transactionMakingState, due}));
     setTransactionMakingState(initialState);
     setDue('')

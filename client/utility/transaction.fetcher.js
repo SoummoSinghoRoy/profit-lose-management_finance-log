@@ -83,3 +83,31 @@ export async function editTransactionPutRequest(transactionid, transactionEditSt
     return res;
   }
 }
+
+export async function deleteTransactionRequest(transactionid, token) {
+  if(token) {
+    try {
+      const {data} = await axios.delete(`http://localhost:7272/api/transaction/single/${transactionid}`,
+        {
+          headers: {
+            'authorization': token
+          }
+        }
+      )
+      return data;
+    } catch (error) {
+      console.log(error);
+      const res = {
+        status: 500,
+        message: `Internal server error`
+      }
+      return res;
+    }
+  } else {
+    const res = {
+      status: 401,
+      message: `UnAuthorized`
+    }
+    return res;
+  }
+}

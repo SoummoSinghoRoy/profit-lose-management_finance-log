@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { fetchAllTransactions, createTransaction, editTransaction, clearTransactionState } from "../slice/transaction.slice";
-import { fetchAllTransactionRequest, createTransactionPostRequest, editTransactionPutRequest } from "@/utility/transaction.fetcher";
+import { fetchAllTransactions, createTransaction, editTransaction, deleteTransaction, clearTransactionState } from "../slice/transaction.slice";
+import { fetchAllTransactionRequest, createTransactionPostRequest, editTransactionPutRequest, deleteTransactionRequest } from "@/utility/transaction.fetcher";
 
 export const allTransactionsFetchAction = createAsyncThunk('transaction/fetch', async(_ ,{dispatch, getState}) => {
   try {
@@ -48,6 +48,23 @@ export const editTransactionAction = createAsyncThunk('transaction/edit', async(
       message: `Internal server error`
     }
     dispatch(editTransaction(res));
+  }
+})
+
+export const deleteTransactionAction = createAsyncThunk('transaction/delete', async(transactionid, {dispatch, getState}) => {
+  console.log(transactionid);
+  try {
+    const state = getState();
+    const token = state.auth.token;
+    const response = await deleteTransactionRequest(transactionid, token);
+    dispatch(deleteTransaction(response));
+  } catch (error) {
+    console.log(error);
+    const res = {
+      status: 500,
+      message: `Internal server error`
+    }
+    dispatch(deleteTransaction(res));
   }
 })
 

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { allTransactionsFetchAction } from "@/lib/action/transaction.action";
+import { allTransactionsFetchAction, deleteTransactionAction } from "@/lib/action/transaction.action";
 import TransactionModal from "./transactionModal";
 
 export default function TransactionCard({ transactionLimit }) {
@@ -12,6 +12,11 @@ export default function TransactionCard({ transactionLimit }) {
   useEffect(() => {
     dispatch(allTransactionsFetchAction());
   }, [dispatch]);
+
+  const transactionDeleteHandler = (transactionid) => {
+    dispatch(deleteTransactionAction(transactionid));
+  }
+
   return (
     <>
       {
@@ -40,7 +45,11 @@ export default function TransactionCard({ transactionLimit }) {
                 <div className="card-footer">
                   <div className="d-grid gap-2 d-flex justify-content-end">
                     <TransactionModal transactionId={transaction._id} />
-                    <button className="btn btn-danger" type="button">Delete</button>
+                    <button 
+                      className="btn btn-danger" 
+                      type="button"
+                      onClick={() => transactionDeleteHandler(transaction._id)}
+                    >Delete</button>
                   </div>
                 </div>
               </div>

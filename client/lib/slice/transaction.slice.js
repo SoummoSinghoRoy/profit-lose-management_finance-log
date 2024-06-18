@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { logoutUserAction } from "../action/auth.action";
+import { deleteTransactionAction } from "../action/transaction.action";
 
 const initialState= {
   allTransaction: [],
@@ -17,15 +18,17 @@ const transactionSlice = createSlice({
   initialState,
   reducers: {
     fetchAllTransactions: (state, action) => {
+      const transactionRecords = action.payload.data || []
       return {
         ...state,
-        allTransaction: action.payload.data || [],
+        allTransaction: transactionRecords.reverse(),
         financialState: action.payload.financialState || {}
       }
     },
     createTransaction: (state, action) => {
+      const transactionRecords = action.payload.data ? [...state.allTransaction, action.payload.data] : [...state.allTransaction]
       return {
-        allTransaction: action.payload.data ? [...state.allTransaction, action.payload.data] : [...state.allTransaction],
+        allTransaction: transactionRecords.reverse(),
         singleTransaction: action.payload.data || {},
         error: action.payload.error || {},
         alertMessage: action.payload.message || '',
@@ -45,6 +48,17 @@ const transactionSlice = createSlice({
       state.financialState = action.payload.financialState || {};
       state.needsClearState = action.payload.message ? true : false
     },
+    deleteTransaction: (state, action) => {
+      const deletedTransaction = action.payload.data || {};
+      const index = state.allTransaction.findIndex( transaction => transaction._id === deletedTransaction._id);
+      state.allTransaction.splice(index, 1);
+      state.singleTransaction = action.payload.data || {};
+      state.error = {};
+      state.alertMessage = '';
+      state.alertStatus = 0;
+      state.financialState = action.payload.financialState || {};
+      state.needsClearState = false
+    },
     clearTransactionState: (state, action) => {
       return {
         ...state,
@@ -63,5 +77,5 @@ const transactionSlice = createSlice({
   }
 })
 
-export const { fetchAllTransactions, createTransaction, editTransaction, clearTransactionState } = transactionSlice.actions;
+export const { fetchAllTransactions, createTransaction, editTransaction, deleteTransaction, clearTransactionState } = transactionSlice.actions;
 export default transactionSlice.reducer;
