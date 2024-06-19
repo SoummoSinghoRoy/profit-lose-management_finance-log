@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { fetchAllTransactions, createTransaction, editTransaction, deleteTransaction, clearTransactionState } from "../slice/transaction.slice";
-import { fetchAllTransactionRequest, createTransactionPostRequest, editTransactionPutRequest, deleteTransactionRequest } from "@/utility/transaction.fetcher";
+import { fetchAllTransactions, createTransaction, editTransaction, deleteTransaction, searchTransaction, clearTransactionState } from "../slice/transaction.slice";
+import { fetchAllTransactionRequest, createTransactionPostRequest, editTransactionPutRequest, deleteTransactionRequest, searchTransactionRequest } from "@/utility/transaction.fetcher";
 
 export const allTransactionsFetchAction = createAsyncThunk('transaction/fetch', async(_ ,{dispatch, getState}) => {
   try {
@@ -52,7 +52,6 @@ export const editTransactionAction = createAsyncThunk('transaction/edit', async(
 })
 
 export const deleteTransactionAction = createAsyncThunk('transaction/delete', async(transactionid, {dispatch, getState}) => {
-  console.log(transactionid);
   try {
     const state = getState();
     const token = state.auth.token;
@@ -65,6 +64,22 @@ export const deleteTransactionAction = createAsyncThunk('transaction/delete', as
       message: `Internal server error`
     }
     dispatch(deleteTransaction(res));
+  }
+})
+
+export const searchTransactionAction = createAsyncThunk('transaction/search', async(searchterm, {dispatch, getState}) => {
+  try {
+    const state = getState();
+    const token = state.auth.token;
+    const response = await searchTransactionRequest(searchterm, token);
+    dispatch(searchTransaction(response));
+  } catch (error) {
+    console.log(error);
+    const res = {
+      status: 500,
+      message: `Internal server error`
+    }
+    dispatch(searchTransaction(res));
   }
 })
 

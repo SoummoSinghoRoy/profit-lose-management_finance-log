@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { logoutUserAction } from "../action/auth.action";
-import { deleteTransactionAction } from "../action/transaction.action";
 
 const initialState= {
   allTransaction: [],
@@ -10,6 +9,7 @@ const initialState= {
   alertMessage: '',
   alertStatus: 0,
   financialState: {},
+  isSearching: false,
   needsClearState: false
 };
 
@@ -34,6 +34,7 @@ const transactionSlice = createSlice({
         alertMessage: action.payload.message || '',
         alertStatus: action.payload.status || 0,
         financialState: action.payload.financialState || {},
+        isSearching: false,
         needsClearState: action.payload.message ? true : false
       }
     },
@@ -46,7 +47,8 @@ const transactionSlice = createSlice({
       state.alertMessage = action.payload.message || '';
       state.alertStatus = action.payload.status || 0;
       state.financialState = action.payload.financialState || {};
-      state.needsClearState = action.payload.message ? true : false
+      state.isSearching = false;
+      state.needsClearState = action.payload.message ? true : false;
     },
     deleteTransaction: (state, action) => {
       const deletedTransaction = action.payload.data || {};
@@ -57,7 +59,15 @@ const transactionSlice = createSlice({
       state.alertMessage = '';
       state.alertStatus = 0;
       state.financialState = action.payload.financialState || {};
+      state.isSearching = false;
       state.needsClearState = false
+    },
+    searchTransaction: (state, action) => {
+      return {
+        ...state,
+        allTransaction: action.payload.data || [],
+        isSearching: true
+      }
     },
     clearTransactionState: (state, action) => {
       return {
@@ -77,5 +87,5 @@ const transactionSlice = createSlice({
   }
 })
 
-export const { fetchAllTransactions, createTransaction, editTransaction, deleteTransaction, clearTransactionState } = transactionSlice.actions;
+export const { fetchAllTransactions, createTransaction, editTransaction, deleteTransaction, searchTransaction, clearTransactionState } = transactionSlice.actions;
 export default transactionSlice.reducer;

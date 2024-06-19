@@ -1,8 +1,25 @@
 "use client"
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { searchTransactionAction, allTransactionsFetchAction } from "@/lib/action/transaction.action";
 
 export default function SearchBar() {
+  const [searchterm, setSearchterm] = useState('');
+  const dispatch = useDispatch();
+
+  const searchInputHandler = (event) => {
+    setSearchterm(event.target.value);
+    if(event.target.value.trim() === "") {
+      dispatch(allTransactionsFetchAction());
+    }
+  }
+  
+  const submitHandler = (event) => {
+    event.preventDefault();
+    dispatch(searchTransactionAction(searchterm));
+  }
   return (
-    <form className="d-flex" role="search">
+    <form onSubmit={submitHandler} className="d-flex" role="search">
       <input
         className="form-control border-secondary me-2"
         type="search"
@@ -10,6 +27,8 @@ export default function SearchBar() {
         name="search"
         placeholder="Search transaction e.g: income/expense or john"
         aria-label="Search"
+        value={searchterm}
+        onChange={searchInputHandler}
       />
       <button className="btn btn-outline-secondary" type="submit">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
