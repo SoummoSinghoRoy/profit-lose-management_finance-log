@@ -301,7 +301,7 @@ const dueTransactionUpdateController = async (req: Request, res: Response): Prom
         const userState = await User.findById(customReq.user!.id);
         const response: ApiResponse = {
           status: 200,
-          message: 'Due Transaction successfully updated',
+          message: 'Due successfully updated',
           data: {
             id: dueUpdatedTransaction!._id,
             transactionType: dueUpdatedTransaction!.transactionType,

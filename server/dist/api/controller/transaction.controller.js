@@ -265,7 +265,7 @@ const dueTransactionUpdateController = (req, res) => __awaiter(void 0, void 0, v
                 const userState = yield User_model_1.default.findById(customReq.user.id);
                 const response = {
                     status: 200,
-                    message: 'Due Transaction successfully updated',
+                    message: 'Due successfully updated',
                     data: {
                         id: dueUpdatedTransaction._id,
                         transactionType: dueUpdatedTransaction.transactionType,
