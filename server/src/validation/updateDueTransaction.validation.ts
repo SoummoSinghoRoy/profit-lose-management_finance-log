@@ -19,9 +19,18 @@ interface UpdateDueTransactionValidationResult {
 const updateDueTransactionValidation = async (updateDueRequestBody: UpdateDueTransactionRequestBody) : Promise<UpdateDueTransactionValidationResult> => {
   let error: {[field: string]: string} = {}
 
+  if(updateDueRequestBody.transactionType === 'income' && !updateDueRequestBody.received) {
+    error.received = `Received amount can't be empty`
+  }
+
   if (updateDueRequestBody.transactionType === 'income' && (updateDueRequestBody.received === undefined || updateDueRequestBody.received === null)) {
     error.received = `Received amount can't be empty`
   }
+
+  if(updateDueRequestBody.transactionType === 'expense' && !updateDueRequestBody.paid) {
+    error.paid = `Paid amount can't be empty`
+  }
+
   if (updateDueRequestBody.transactionType === 'expense' && (updateDueRequestBody.paid === undefined || updateDueRequestBody.paid === null)) {
     error.paid = `Paid amount can't be empty`
   }

@@ -15,8 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Transaction_model_1 = __importDefault(require("../model/Transaction.model"));
 const updateDueTransactionValidation = (updateDueRequestBody) => __awaiter(void 0, void 0, void 0, function* () {
     let error = {};
+    if (updateDueRequestBody.transactionType === 'income' && !updateDueRequestBody.received) {
+        error.received = `Received amount can't be empty`;
+    }
     if (updateDueRequestBody.transactionType === 'income' && (updateDueRequestBody.received === undefined || updateDueRequestBody.received === null)) {
         error.received = `Received amount can't be empty`;
+    }
+    if (updateDueRequestBody.transactionType === 'expense' && !updateDueRequestBody.paid) {
+        error.paid = `Paid amount can't be empty`;
     }
     if (updateDueRequestBody.transactionType === 'expense' && (updateDueRequestBody.paid === undefined || updateDueRequestBody.paid === null)) {
         error.paid = `Paid amount can't be empty`;
