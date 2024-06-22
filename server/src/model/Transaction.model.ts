@@ -13,6 +13,7 @@ interface ITransaction {
     due: number
   },
   date: string;
+  last_update_date: string;
   description: string;
   user: ObjectId;
 }
@@ -49,6 +50,12 @@ const transactionSchema = new Schema<ITransaction> ({
     }
   },
   date: {
+    type: String,
+    required: true,
+    set: (v: string) => moment(v, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+    get: (v: string) => moment(v, 'YYYY-MM-DD').format('DD-MM-YYYY')
+  },
+  last_update_date: {
     type: String,
     required: true,
     set: (v: string) => moment(v, 'YYYY-MM-DD').format('YYYY-MM-DD'),

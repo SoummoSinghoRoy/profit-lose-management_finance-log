@@ -43,9 +43,9 @@ const updateDueTransactionValidation = async (updateDueRequestBody: UpdateDueTra
     error.date = `Date can't be empty`
   }
   const validTransaction = await Transaction.findById(updateDueRequestBody.transactionId);
-  if (updateDueRequestBody.transactionType === 'income' && updateDueRequestBody.currentDue > validTransaction!.amount.due) {
+  if (updateDueRequestBody.transactionType === 'income' && updateDueRequestBody.received > validTransaction!.amount.due) {
     error.received = `Received amount can't bigger then due amount`
-  } else if(updateDueRequestBody.transactionType === 'expense' && updateDueRequestBody.currentDue > validTransaction!.amount.due) {
+  } else if(updateDueRequestBody.transactionType === 'expense' && updateDueRequestBody.paid > validTransaction!.amount.due) {
     error.paid = `Paid amount can't bigger then due amount`
   }
 

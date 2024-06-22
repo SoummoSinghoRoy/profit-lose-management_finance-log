@@ -23,6 +23,7 @@ interface ApiResponse {
       due: number;
     };
     date: string;
+    last_update_date: string;
     description: string;
   } | object[];
   financialState?: {
@@ -60,6 +61,7 @@ const transactionCreatePostController = async (req: Request, res: Response): Pro
           received: transactionType === 'expense' ? 0 : received,
           due
         },
+        last_update_date: date,
         date,
         description,
         user: user!._id
@@ -107,6 +109,7 @@ const transactionCreatePostController = async (req: Request, res: Response): Pro
             due: transaction.amount.due
           },
           date: transaction.date,
+          last_update_date: transaction.last_update_date,
           description: transaction.description
         },
         financialState: {
@@ -160,6 +163,7 @@ const transactionEditPutController = async (req: Request, res: Response): Promis
               due
             },
             date,
+            last_update_date: date,
             description },
           { new: true } 
         );
@@ -207,6 +211,7 @@ const transactionEditPutController = async (req: Request, res: Response): Promis
               due: updatedTransaction!.amount.due
             },
             date: updatedTransaction!.date,
+            last_update_date: updatedTransaction!.last_update_date,
             description: updatedTransaction!.description
           },
           financialState: {
@@ -266,7 +271,7 @@ const dueTransactionUpdateController = async (req: Request, res: Response): Prom
               "received": transactionType === 'income' ? validTransaction.amount.received + received : validTransaction.amount.received,
               "due": currentDue
             },
-            "date": date
+            "last_update_date": date
           }}
         )
         const dueUpdatedTransaction = await Transaction.findById(transactionId);
@@ -313,6 +318,7 @@ const dueTransactionUpdateController = async (req: Request, res: Response): Prom
               due: dueUpdatedTransaction!.amount.due
             },
             date: dueUpdatedTransaction!.date,
+            last_update_date: dueUpdatedTransaction!.last_update_date,
             description: dueUpdatedTransaction!.description
           },
           financialState: {
@@ -430,6 +436,7 @@ const transactionDeleteController = async (req: Request, res: Response): Promise
             due: validTransaction.amount.due
           },
           date: validTransaction.date,
+          last_update_date: validTransaction.last_update_date,
           description: validTransaction.description
         },
         financialState: {

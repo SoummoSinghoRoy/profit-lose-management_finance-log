@@ -42,6 +42,12 @@ const transactionSchema = new mongoose_1.Schema({
         set: (v) => (0, moment_1.default)(v, 'YYYY-MM-DD').format('YYYY-MM-DD'),
         get: (v) => (0, moment_1.default)(v, 'YYYY-MM-DD').format('DD-MM-YYYY')
     },
+    last_update_date: {
+        type: String,
+        required: true,
+        set: (v) => (0, moment_1.default)(v, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+        get: (v) => (0, moment_1.default)(v, 'YYYY-MM-DD').format('DD-MM-YYYY')
+    },
     description: {
         type: String,
         required: true

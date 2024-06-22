@@ -43,6 +43,7 @@ const transactionCreatePostController = (req, res) => __awaiter(void 0, void 0, 
                     received: transactionType === 'expense' ? 0 : received,
                     due
                 },
+                last_update_date: date,
                 date,
                 description,
                 user: user._id
@@ -85,6 +86,7 @@ const transactionCreatePostController = (req, res) => __awaiter(void 0, void 0, 
                         due: transaction.amount.due
                     },
                     date: transaction.date,
+                    last_update_date: transaction.last_update_date,
                     description: transaction.description
                 },
                 financialState: {
@@ -137,6 +139,7 @@ const transactionEditPutController = (req, res) => __awaiter(void 0, void 0, voi
                         due
                     },
                     date,
+                    last_update_date: date,
                     description }, { new: true });
                 const updatedTransaction = yield Transaction_model_1.default.findById(transactionId);
                 const user = yield User_model_1.default.findById(customReq.user.id);
@@ -177,6 +180,7 @@ const transactionEditPutController = (req, res) => __awaiter(void 0, void 0, voi
                             due: updatedTransaction.amount.due
                         },
                         date: updatedTransaction.date,
+                        last_update_date: updatedTransaction.last_update_date,
                         description: updatedTransaction.description
                     },
                     financialState: {
@@ -236,7 +240,7 @@ const dueTransactionUpdateController = (req, res) => __awaiter(void 0, void 0, v
                             "received": transactionType === 'income' ? validTransaction.amount.received + received : validTransaction.amount.received,
                             "due": currentDue
                         },
-                        "date": date
+                        "last_update_date": date
                     } });
                 const dueUpdatedTransaction = yield Transaction_model_1.default.findById(transactionId);
                 const user = yield User_model_1.default.findById(customReq.user.id);
@@ -277,6 +281,7 @@ const dueTransactionUpdateController = (req, res) => __awaiter(void 0, void 0, v
                             due: dueUpdatedTransaction.amount.due
                         },
                         date: dueUpdatedTransaction.date,
+                        last_update_date: dueUpdatedTransaction.last_update_date,
                         description: dueUpdatedTransaction.description
                     },
                     financialState: {
@@ -393,6 +398,7 @@ const transactionDeleteController = (req, res) => __awaiter(void 0, void 0, void
                         due: validTransaction.amount.due
                     },
                     date: validTransaction.date,
+                    last_update_date: validTransaction.last_update_date,
                     description: validTransaction.description
                 },
                 financialState: {

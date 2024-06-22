@@ -34,10 +34,10 @@ const updateDueTransactionValidation = (updateDueRequestBody) => __awaiter(void 
         error.date = `Date can't be empty`;
     }
     const validTransaction = yield Transaction_model_1.default.findById(updateDueRequestBody.transactionId);
-    if (updateDueRequestBody.transactionType === 'income' && updateDueRequestBody.currentDue > validTransaction.amount.due) {
+    if (updateDueRequestBody.transactionType === 'income' && updateDueRequestBody.received > validTransaction.amount.due) {
         error.received = `Received amount can't bigger then due amount`;
     }
-    else if (updateDueRequestBody.transactionType === 'expense' && updateDueRequestBody.currentDue > validTransaction.amount.due) {
+    else if (updateDueRequestBody.transactionType === 'expense' && updateDueRequestBody.paid > validTransaction.amount.due) {
         error.paid = `Paid amount can't bigger then due amount`;
     }
     return {
