@@ -112,10 +112,39 @@ export async function deleteTransactionRequest(transactionid, token) {
   }
 }
 
+export async function dueUpdateRequest(transactionid, dueUpdateState, token) {
+  if(token) {
+    try {
+      const {data} = await axios.patch(`http://localhost:7272/api/transaction/due/edit/${transactionid}`,
+        dueUpdateState,
+        {
+          headers: {
+            'authorization': token
+          }
+        }
+      )
+      return data;
+    } catch (error) {
+      console.log(error);
+      const res = {
+        status: 500,
+        message: `Internal server error`
+      }
+      return res;
+    }
+  } else {
+    const res = {
+      status: 401,
+      message: `UnAuthorized`
+    }
+    return res;
+  }
+}
+
 export async function searchTransactionRequest(searchterm, token) {
   if(token) {
     try {
-      const {data} = await axios.get(`http://localhost:7272/api/search//transaction/${searchterm}`,
+      const {data} = await axios.get(`http://localhost:7272/api/search/transaction/${searchterm}`,
         {
           headers: {
             'authorization': token

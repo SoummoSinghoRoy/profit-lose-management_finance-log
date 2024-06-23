@@ -77,7 +77,7 @@ const Navbar = () => {
                     <Link className="nav-link text-white" href="/transaction">Transactions</Link>
                   </li>
                   <li className='nav-item'>
-                    <Link className="nav-link text-white" href="#">Due</Link>
+                    <Link className="nav-link text-white" href="/transaction/due">Due</Link>
                   </li>
                   <li className="nav-item dropend">
                     <button 

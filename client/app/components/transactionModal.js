@@ -40,10 +40,9 @@ export default function TransactionModal({transactionAction, transactionId}) {
             <div className="modal-header">
               {
                 transactionAction === "create" ? 
-                <h1 className="modal-title fs-5" id="exampleModalLabel">Create a transaction</h1> :
+                <h1 className="modal-title fs-5" id="exampleModalLabel">Create a transaction</h1> : 
                 <h1 className="modal-title fs-5" id="exampleModalLabel">Edit your transaction</h1>
               }
-              
               <button
                 type="button"
                 className="btn-close"
@@ -55,7 +54,7 @@ export default function TransactionModal({transactionAction, transactionId}) {
             {alertMessage ? <Alert status={alertStatus} message={alertMessage} /> : null}
             {
               transactionAction === "create" ? 
-              <TransactionMakingForm modalButtonHandler={modalButtonClickHandler} /> :
+              <TransactionMakingForm modalButtonHandler={modalButtonClickHandler} /> : 
               <TransactionEditForm modalButtonHandler={modalButtonClickHandler} transactionId={transactionId}/>
             }
           </div>

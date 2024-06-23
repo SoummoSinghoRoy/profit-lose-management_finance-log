@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { editTransactionAction } from "@/lib/action/transaction.action";
+import { editTransactionAction, allTransactionsFetchAction } from "@/lib/action/transaction.action";
 
 const initialState = {
   transactionType: '',
@@ -22,6 +22,7 @@ export default function TransactionEditForm({ modalButtonHandler, transactionId 
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(allTransactionsFetchAction())
     if(transactionId) {
       const filteredTransaction = allTransaction.find((transaction) => transaction._id === transactionId);
       setTransactionid(filteredTransaction._id);
@@ -36,7 +37,7 @@ export default function TransactionEditForm({ modalButtonHandler, transactionId 
       });
       setCurrentDue(filteredTransaction.amount.due);
     }
-  }, [transactionid, allTransaction])
+  }, [transactionId])
 
   const calculateDue = (updatedState) => {
     if (updatedState.transactionType === "income" && (updatedState.total && updatedState.received)) {
@@ -64,7 +65,7 @@ export default function TransactionEditForm({ modalButtonHandler, transactionId 
 
   const submitHandler = (event) => {
     event.preventDefault();
-    if(transactionid) {
+    if(transactionId) {
       const transactionEditState = {...currentTransactionState, due: currentDue};
       dispatch(editTransactionAction({transactionid, transactionEditState}));
     } else {

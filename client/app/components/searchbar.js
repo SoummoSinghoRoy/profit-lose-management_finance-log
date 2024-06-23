@@ -16,6 +16,7 @@ export default function SearchBar() {
   
   const submitHandler = (event) => {
     event.preventDefault();
+    console.log(searchterm);
     dispatch(searchTransactionAction(searchterm));
   }
   return (
@@ -23,7 +24,6 @@ export default function SearchBar() {
       <input
         className="form-control border-secondary me-2"
         type="search"
-        id="search"
         name="search"
         placeholder="Search transaction e.g: income/expense or john"
         aria-label="Search"

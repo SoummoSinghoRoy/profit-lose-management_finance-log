@@ -47,7 +47,7 @@ export default function TransactionCard({ transactionLimit }) {
                 </div>
                 <div className="card-footer">
                   <div className="d-grid gap-2 d-flex justify-content-end">
-                    <TransactionModal transactionId={transaction._id} />
+                    <TransactionModal transactionId={transaction._id} transactionAction="edit" />
                     <button 
                       className="btn btn-danger" 
                       type="button"

@@ -41,7 +41,27 @@ const transactionSlice = createSlice({
     editTransaction: (state, action) => {
       const updatedTransaction = action.payload.data || {};
       const index = state.allTransaction.findIndex(transaction => transaction._id === updatedTransaction._id);
-      state.allTransaction.splice(index, 1, updatedTransaction);
+      if(Object.keys(updatedTransaction).length !== 0) {
+        state.allTransaction.splice(index, 1, updatedTransaction)
+      } else {
+        state.allTransaction = [...state.allTransaction];
+      }
+      state.singleTransaction = action.payload.data || {};
+      state.error = action.payload.error || {};
+      state.alertMessage = action.payload.message || '';
+      state.alertStatus = action.payload.status || 0;
+      state.financialState = action.payload.financialState || {};
+      state.isSearching = false;
+      state.needsClearState = action.payload.message ? true : false;
+    },
+    dueUpdate: (state, action) => {
+      const updateDueTransaction = action.payload.data || {};
+      const index = state.allTransaction.findIndex(transaction => transaction._id === updateDueTransaction._id);
+      if(Object.keys(updateDueTransaction).length !== 0) {
+        state.allTransaction.splice(index, 1, updateDueTransaction)
+      } else {
+        state.allTransaction = [...state.allTransaction];
+      }
       state.singleTransaction = action.payload.data || {};
       state.error = action.payload.error || {};
       state.alertMessage = action.payload.message || '';
@@ -53,7 +73,11 @@ const transactionSlice = createSlice({
     deleteTransaction: (state, action) => {
       const deletedTransaction = action.payload.data || {};
       const index = state.allTransaction.findIndex( transaction => transaction._id === deletedTransaction._id);
-      state.allTransaction.splice(index, 1);
+      if(Object.keys(deleteTransaction).length !==0) {
+        state.allTransaction.splice(index, 1);
+      } else {
+        state.allTransaction = [...state.allTransaction];
+      }   
       state.singleTransaction = action.payload.data || {};
       state.error = {};
       state.alertMessage = '';
@@ -87,5 +111,5 @@ const transactionSlice = createSlice({
   }
 })
 
-export const { fetchAllTransactions, createTransaction, editTransaction, deleteTransaction, searchTransaction, clearTransactionState } = transactionSlice.actions;
+export const { fetchAllTransactions, createTransaction, editTransaction, dueUpdate, deleteTransaction, searchTransaction, clearTransactionState } = transactionSlice.actions;
 export default transactionSlice.reducer;
