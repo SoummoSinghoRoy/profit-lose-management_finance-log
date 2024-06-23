@@ -21,9 +21,9 @@ The software includes two main modules: user module and transaction module.
               4. Transaction delete
  
 ### Additional features: 
-              1. Search feature,
-              2. Balance log,
-              3. Balance state card 
+- Search feature,
+- Balance log,
+- Balance state card 
 
 ## *Summary:*
 
