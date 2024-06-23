@@ -16,7 +16,7 @@ export default function AllDue() {
     } else {
       dispatch(allTransactionsFetchAction())
     }
-  }, [])
+  }, [isSearching, dispatch])
 
   return (
     <>

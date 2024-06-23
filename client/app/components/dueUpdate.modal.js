@@ -4,11 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 
 import Alert from "./alert";
 import DueUpdateForm from "./dueUpdate.form";
-import { allTransactionsFetchAction } from "@/lib/action/transaction.action";
 
 export default function DueUpdateModal({transactionId}) {
   const [modalVisibility, setModalVisibility] = useState(false);
-  const dispatch = useDispatch();
   const { alertMessage, alertStatus } = useSelector((state) => state.transaction);
 
   const modalButtonClickHandler = () => {
